@@ -1,0 +1,29 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables (local secrets)
+.env
+.env.*
+
+# Streamlit (keep config.toml; never commit secrets)
+.streamlit/secrets.toml
+
+# Packaging / build
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors (optional; remove if you want shared IDE settings)
+.idea/
