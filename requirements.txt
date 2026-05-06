@@ -1,8 +1,0 @@
-streamlit
-pandas
-numpy
-plotly
-pyvis
-networkx
-folium
-streamlit-folium
