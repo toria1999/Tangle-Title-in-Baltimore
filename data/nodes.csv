@@ -1,0 +1,22 @@
+node_id,label,level,type,evidence_source,description
+N001,Lack of knowledge on deed transfer,individual,barrier,interview; mapping,Residents may not know that informal inheritance does not automatically update legal ownership.
+N002,Not engaged in estate planning,individual,barrier,interview; mapping,Residents may talk about wishes but not record a deed or arrange formal transfer.
+N003,Cost of estate planning,individual,barrier,interview; policy,Legal and planning services can be expensive or hard to access for families on fixed incomes.
+N004,Engagement with estate planning,individual,facilitator,interview; mapping,Early estate planning can prevent uncertainty after a homeowner dies.
+N005,No clear heir,interpersonal,barrier,interview; mapping,Multiple or unclear heirs can delay probate or deed transfer.
+N006,Family disagreement over home ownership,interpersonal,barrier,interview; mapping,Disagreement among relatives can delay sale repair decisions or ownership transfer.
+N007,Family cohesion,interpersonal,facilitator,interview,Agreement among family members can make collective decisions about inheritance easier.
+N008,Legal service organizations,community,facilitator,mapping; CBO,Organizations may help residents navigate title clearing probate and deed transfer.
+N009,Housing service organizations,community,facilitator,mapping; CBO,Housing service organizations can connect residents to repair tax or ownership resources.
+N010,Neighborhood associations,community,community actor,mapping; CBO,Neighborhood associations may identify residents who need help and connect them to services.
+N011,Probate Court,policy,formal actor,policy; mapping,Formal court processes may be required to confirm ownership transfer.
+N012,Register of Wills,policy,formal actor,policy; mapping,The Register of Wills is part of the administrative pathway for estate and inheritance processes.
+N013,Heirs property rights policy,policy,structural determinant,policy; mapping,Legal frameworks shape whether families can resolve ownership claims and avoid property loss.
+N014,Tax sale risk,economic,barrier,quant; policy,Tangled titles may make it harder to prevent or respond to tax sale vulnerability.
+N015,Repair and loan ineligibility,economic,barrier,interview; policy,Residents may be unable to qualify for repairs tax credits grants or loans because their name is not on the deed.
+N016,Lower property value and disinvestment,economic,structural determinant,quant; context,Disinvestment and low property value may reduce incentives or capacity to resolve legal ownership.
+N017,Digital divide,societal,barrier,interview; context,Older adults may be left behind in digital processes connected to estate planning and title creation.
+N018,Information gap,societal,barrier,interview; mapping,Residents may receive fragmented or incomplete information about what formal systems require.
+N019,Community legal clinics,societal,facilitator,CBO; mapping,Community-based legal clinics can reduce information gaps and improve service navigation.
+N020,Historical redlining and structural racism,societal,structural determinant,quant; context,Historical and contemporary structural inequities shape neighborhood wealth and housing stability.
+N021,Tangled Titles,system,structural determinant,interview; mapping; quant,Unclear or outdated legal ownership that can block household access to resources and wealth preservation.
