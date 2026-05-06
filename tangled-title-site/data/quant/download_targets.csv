@@ -1,0 +1,7 @@
+local_filename,github_path,purpose
+tract_intersectional_group_merged.csv,analysis/20260427uzzi_category_match/outputs/tract_intersectional_group_merged.csv,Full tract-level counts equity metrics and neighborhood group labels
+baltimore_tracts.geojson,streamlit/data/map_assets/baltimore_tracts.geojson,Baltimore census tract boundary file for the interactive tract map
+tangled_and_at_risk_by_census_tract_baltimore_202603.csv,Data/tangled_and_at_risk_by_census_tract_baltimore_202603.csv,Base tract-level tangled-title and at-risk property metrics dated March 2026
+acs_acs5_2019_tract_baltimore_city_md_ice_input_derived.csv,Data/acs_acs5_2019_tract_baltimore_city_md_ice_input_derived.csv,ACS 2019 5-year derived tract context variables
+tract_intersectional_group_lookup.csv,analysis/20260427uzzi_category_match/outputs/tract_intersectional_group_lookup.csv,Lookup from tract GEOID to neighborhood group
+Part1_Crime_Beta_9S(shooting).geojson,Data/Part1_Crime_Beta_9S(shooting).geojson,Raw shooting point incidents for future tract-level non-fatal shooting rate calculation

@@ -1,0 +1,6 @@
+asset_type,local_path,source_repo_path,status,use_in_platform
+table,data/quant/p5_publication_style_table.csv,analysis/20260427uzzi_category_match/outputs/p5_publication_style_table.csv,incorporated,Group-level demographic/wealth context
+tract_lookup,data/quant/tract_intersectional_group_lookup.csv,analysis/20260427uzzi_category_match/outputs/tract_intersectional_group_lookup.csv,pending_full_export,Join tract GEOIDs to intersectional groups
+tract_metrics,data/quant/tract_intersectional_group_merged.csv,analysis/20260427uzzi_category_match/outputs/tract_intersectional_group_merged.csv,pending_full_export,Replace local legacy tract sample with real tract metrics
+geojson,data/quant/baltimore_tracts.geojson,streamlit/data/map_assets/baltimore_tracts.geojson,pending_full_export,Render true Baltimore tract choropleth map
+svg,data/quant/svg_output/,analysis/*/svg_output/,pending_full_export,Display generated analysis figures as evidence panels

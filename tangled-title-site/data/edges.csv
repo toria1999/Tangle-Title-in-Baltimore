@@ -1,0 +1,23 @@
+source,target,relationship,mechanism
+N001,N011,increases difficulty navigating,Knowledge gaps may delay use of formal probate systems.
+N002,N004,reduces likelihood of,Not engaging in estate planning weakens prevention pathways.
+N003,N002,contributes to,High cost can reduce estate planning engagement.
+N004,N021,may prevent,Formal estate planning can reduce future tangled title risk.
+N005,N011,creates barrier to,No clear heir can slow or complicate ownership confirmation.
+N006,N005,can produce,Family disagreement can create uncertainty about who has authority.
+N007,N005,may reduce,Family cohesion can clarify inheritance decisions.
+N008,N001,may reduce,Legal organizations can help close knowledge gaps.
+N009,N015,may respond to,Housing organizations may connect residents to repair or assistance pathways.
+N010,N008,connects residents to,Neighborhood associations may refer residents to legal services.
+N011,N021,governs pathway for,Probate processes affect whether ownership can be clarified.
+N012,N011,links to,Administrative estate processes can connect to court pathways.
+N013,N006,shapes consequences of,Heirs property law affects what happens when multiple family members have claims.
+N014,N021,may be amplified by,Unclear ownership can make tax sale prevention harder.
+N015,N021,is caused by,Unclear title can block eligibility for assistance.
+N016,N014,may overlap with,Disinvestment may coincide with higher vulnerability to property loss.
+N017,N018,contributes to,Digital barriers can deepen information gaps.
+N018,N001,reinforces,Fragmented information makes deed transfer harder to understand.
+N019,N018,may reduce,Community legal clinics can provide accessible guidance.
+N020,N016,contributes to,Structural inequity shapes property value and neighborhood investment.
+N020,N021,contextualizes,Historical and contemporary inequity shape where title risk becomes harmful.
+N021,N014,may contribute to,Delayed ownership confirmation may reduce ability to resolve tax or property issues.
