@@ -41,7 +41,7 @@ GROUP_ORDER = [
 # (fragment id, H2 title) for in-page sidebar TOC on this page only.
 _QUANT_TOC_H2: tuple[tuple[str, str], ...] = (
     ("what-is-the-burden-of-tangled-titles", "What is the burden of tangled titles?"),
-    ("quant-bh-property-value", "Black Homeownership and Property Value"),
+    ("who-is-carrying-the-burden", "Who's carrying the burden?"),
     ("historical-context", "Historical Context"),
     ("intersectionality-analysis", "Intersectionality Analysis"),
 )
@@ -849,7 +849,7 @@ st.markdown("### Research Questions")
 rq_cards = [
     (
         "RQ1",
-        "Black homeownership and property value",
+        "Who's carrying the burden?",
         "What is the distribution of Black homeownership in Baltimore, and among Black homeowners "
         "what is the median property value (including Black–White gaps)?",
     ),
@@ -947,9 +947,9 @@ with tract_map_col:
 st.divider()
 
 # =============================================================================
-# H2: Black Homeownership and Property Value
+# H2: Who's carrying the burden?
 # =============================================================================
-_quant_section_h2("quant-bh-property-value", "Black Homeownership and Property Value")
+_quant_section_h2("who-is-carrying-the-burden", "Who's carrying the burden?")
 
 st.markdown(
     """
@@ -1056,7 +1056,7 @@ with group_hist_right:
     render_intersectionality_group_map(tracts, geojson)
 
 # -----------------------------------------------------------------------------
-# Black population × property value scatter (still under Black Homeownership H2)
+# Black population × property value scatter (still under Who's carrying the burden? H2)
 # -----------------------------------------------------------------------------
 st.markdown(
     "Tract-level relationship between **Black population share** and **median property value for "
