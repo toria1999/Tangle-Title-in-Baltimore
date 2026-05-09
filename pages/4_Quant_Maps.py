@@ -22,6 +22,8 @@ HOLC_MAP_IMAGE = QUANT_DIR / "holc-map.png"
 # Match `render_interactive_map` Plotly height + selectbox/caption slack; left column stretches to this min.
 _INTERACTIVE_TRACT_MAP_FIG_HEIGHT_PX = 560
 _CITYWIDE_MAP_ROW_LEFT_MIN_HEIGHT_PX = _INTERACTIVE_TRACT_MAP_FIG_HEIGHT_PX + 220
+# Quadrant diagram + tract group map (same Streamlit row): shared Plotly height for visual alignment.
+_QUADRANT_GROUP_MAP_ROW_FIG_HEIGHT_PX = 480
 
 GROUP_COLORS = {
     "Sustained advantage": "#a9c77b",
@@ -43,7 +45,10 @@ _QUANT_TOC_H2: tuple[tuple[str, str], ...] = (
     ("what-is-the-burden-of-tangled-titles", "What is the burden of tangled titles?"),
     ("who-is-carrying-the-burden", "Who's carrying the burden?"),
     ("historical-context", "Historical Context"),
-    ("intersectionality-analysis", "Intersectionality Analysis"),
+    (
+        "impact-of-historical-contemporary-disadvantage",
+        "Impact of Historical Disadvantage and Contemporary Disadvantage",
+    ),
 )
 
 
@@ -388,8 +393,15 @@ def render_demographic_property_value_map(
         return
 
     if len(available) == 1:
+        # Keep control height consistent across side-by-side columns.
         selected_label = next(iter(available))
-        st.markdown(f"**{selected_label}**")
+        st.selectbox(
+            selectbox_label,
+            [selected_label],
+            index=0,
+            key=selectbox_key,
+            disabled=True,
+        )
     else:
         selected_label = st.selectbox(selectbox_label, list(available.keys()), key=selectbox_key)
     selected_col, axis_unit = available[selected_label]
@@ -442,65 +454,174 @@ def render_demographic_property_value_map(
 
 def render_quadrant_diagram() -> None:
     fig = go.Figure()
-    fig.add_shape(type="line", x0=0.5, x1=0.5, y0=0, y1=1, line=dict(color="#294943", width=2))
-    fig.add_shape(type="line", x0=0, x1=1, y0=0.5, y1=0.5, line=dict(color="#294943", width=2))
+
+    # Four filled quadrants with dividing lines.
     quadrants = [
-        ("Sustained advantage", 0.75, 0.75, "Higher historical + higher current advantage"),
-        ("Contemporary advantage", 0.75, 0.25, "Lower historical, higher current advantage"),
-        ("Previous advantage", 0.25, 0.75, "Higher historical, lower current advantage"),
-        ("Sustained disadvantage", 0.25, 0.25, "Lower historical + lower current advantage"),
+        ("Contemporary Advantage", 0.0, 0.5, 0.5, 1.0, "High Redlining (Disadvantage)", "High Socioeconomic Status"),
+        ("Sustained Advantage", 0.5, 1.0, 0.5, 1.0, "No Redlining (Advantage)", "High Socioeconomic Status"),
+        ("Sustained Disadvantage", 0.0, 0.5, 0.0, 0.5, "High Redlining (Disadvantage)", "Low Socioeconomic Status"),
+        ("Previous Advantage", 0.5, 1.0, 0.0, 0.5, "No Redlining (Advantage)", "Low Socioeconomic Status"),
     ]
-    for group, x, y, note in quadrants:
-        fig.add_trace(
-            go.Scatter(
-                x=[x],
-                y=[y],
-                mode="markers",
-                marker=dict(size=34, color=GROUP_COLORS[group], line=dict(width=2.5, color="#18312d")),
-                hovertemplate=f"<b>{group}</b><br>{note}<extra></extra>",
-                showlegend=False,
-            )
+    group_color_key = {
+        "Contemporary Advantage": "Contemporary advantage",
+        "Sustained Advantage": "Sustained advantage",
+        "Sustained Disadvantage": "Sustained disadvantage",
+        "Previous Advantage": "Previous advantage",
+    }
+    text_color = {
+        "Contemporary Advantage": "#ffffff",
+        "Sustained Advantage": "#101010",
+        "Sustained Disadvantage": "#ffffff",
+        "Previous Advantage": "#ffffff",
+    }
+
+    for title, x0, x1, y0, y1, line2, line3 in quadrants:
+        fill = GROUP_COLORS[group_color_key[title]]
+        fig.add_shape(
+            type="rect",
+            x0=x0,
+            x1=x1,
+            y0=y0,
+            y1=y1,
+            line=dict(color="#18312d", width=1.8),
+            fillcolor=fill,
+            layer="below",
+        )
+        cx = (x0 + x1) / 2
+        cy = (y0 + y1) / 2
+        fig.add_annotation(
+            x=cx,
+            y=cy + 0.12,
+            text=f"<b><u>{title}</u></b>",
+            showarrow=False,
+            font=dict(size=17, color=text_color[title], family="Source Sans Pro, sans-serif"),
         )
         fig.add_annotation(
-            x=x,
-            y=y + 0.11,
-            text=f"<b>{group}</b>",
+            x=cx,
+            y=cy + 0.03,
+            text=f"<b>{line2}</b>",
             showarrow=False,
-            font=dict(size=17, color="#18312d", family="Source Sans Pro, sans-serif"),
+            font=dict(size=13, color=text_color[title], family="Source Sans Pro, sans-serif"),
         )
         fig.add_annotation(
-            x=x,
-            y=y - 0.13,
-            text=note,
+            x=cx,
+            y=cy - 0.07,
+            text=f"<b>{line3}</b>",
             showarrow=False,
-            font=dict(size=14, color="#18312d", family="Source Sans Pro, sans-serif"),
-            opacity=1,
+            font=dict(size=13, color=text_color[title], family="Source Sans Pro, sans-serif"),
         )
-    axis_title_font = dict(size=16, color="#18312d", family="Source Sans Pro, sans-serif")
-    tick_font = dict(size=14, color="#294943", family="Source Sans Pro, sans-serif")
+
+    # Crosshair between quadrants.
+    fig.add_shape(type="line", x0=0.5, x1=0.5, y0=0, y1=1, line=dict(color="#18312d", width=2))
+    fig.add_shape(type="line", x0=0, x1=1, y0=0.5, y1=0.5, line=dict(color="#18312d", width=2))
+
+    # Axis arrows (outside the square to mimic the reference figure).
+    fig.add_annotation(
+        x=1.03,
+        y=-0.03,
+        xref="x",
+        yref="y",
+        ax=-0.03,
+        ay=-0.03,
+        axref="x",
+        ayref="y",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1.1,
+        arrowwidth=2.2,
+        arrowcolor="#101010",
+        text="",
+    )
+    fig.add_annotation(
+        x=-0.03,
+        y=1.03,
+        xref="x",
+        yref="y",
+        ax=-0.03,
+        ay=-0.03,
+        axref="x",
+        ayref="y",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1.1,
+        arrowwidth=2.2,
+        arrowcolor="#101010",
+        text="",
+    )
+
+    # Axis labels sit outside the arrow shafts (Plotly draws the arrow line on top of annotations).
+    # - Vertical spine at x≈-0.03: keep all left text fully to the left (xanchor='right').
+    # - Horizontal spine at y≈-0.03: bottom captions use yanchor='top' with y below the shaft.
+    _left_lbl_x = -0.085
+    fig.add_annotation(
+        x=_left_lbl_x,
+        y=0.53,
+        xref="x",
+        yref="y",
+        text="<b>Contemporary<br>Segregation</b>",
+        showarrow=False,
+        font=dict(size=18, color="#6d3c1d", family="Source Sans Pro, sans-serif"),
+        xanchor="right",
+        yanchor="middle",
+    )
+    fig.add_annotation(
+        x=_left_lbl_x,
+        y=0.85,
+        xref="x",
+        yref="y",
+        text="<b>Advantage</b><br>(High ICE scores)",
+        showarrow=False,
+        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        xanchor="right",
+        yanchor="middle",
+    )
+    fig.add_annotation(
+        x=_left_lbl_x,
+        y=0.15,
+        xref="x",
+        yref="y",
+        text="<b>Disadvantage</b><br>(Low ICE scores)",
+        showarrow=False,
+        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        xanchor="right",
+        yanchor="middle",
+    )
+    fig.add_annotation(
+        x=0.5,
+        y=-0.046,
+        text="<b>Historical Redlining</b>",
+        showarrow=False,
+        font=dict(size=17, color="#9a2f23", family="Source Sans Pro, sans-serif"),
+        xanchor="center",
+        yanchor="top",
+    )
+    fig.add_annotation(
+        x=0.18,
+        y=-0.10,
+        text="<b>Disadvantage</b><br>(HOLC Grades C/D)",
+        showarrow=False,
+        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        xanchor="center",
+        yanchor="top",
+    )
+    fig.add_annotation(
+        x=0.82,
+        y=-0.10,
+        text="<b>Advantage</b><br>(HOLC Grades A/B)",
+        showarrow=False,
+        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        xanchor="center",
+        yanchor="top",
+    )
+
+    fig.update_xaxes(range=[-0.22, 1.06], visible=False, fixedrange=True)
+    fig.update_yaxes(range=[-0.24, 1.06], visible=False, fixedrange=True)
     fig.update_layout(
-        height=500,
-        margin=dict(l=24, r=24, t=36, b=24),
+        height=_QUADRANT_GROUP_MAP_ROW_FIG_HEIGHT_PX,
+        margin=dict(l=132, r=36, t=24, b=106),
         plot_bgcolor="#fff9e6",
         paper_bgcolor="#fff9e6",
-        xaxis=dict(
-            title=dict(text="Current neighborhood advantage", font=axis_title_font),
-            range=[0, 1],
-            tickvals=[0.25, 0.75],
-            ticktext=["Lower", "Higher"],
-            tickfont=tick_font,
-            showgrid=False,
-            zeroline=False,
-        ),
-        yaxis=dict(
-            title=dict(text="Historical neighborhood advantage", font=axis_title_font),
-            range=[0, 1],
-            tickvals=[0.25, 0.75],
-            ticktext=["Lower", "Higher"],
-            tickfont=tick_font,
-            showgrid=False,
-            zeroline=False,
-        ),
+        showlegend=False,
     )
     st.plotly_chart(fig, width="stretch")
 
@@ -547,11 +668,11 @@ def render_intersectionality_group_map(tracts: pd.DataFrame | None, geojson: dic
         center={"lat": 39.299, "lon": -76.61},
         zoom=10,
         opacity=0.78,
-        height=460,
+        height=_QUADRANT_GROUP_MAP_ROW_FIG_HEIGHT_PX,
     )
     map_fig.update_layout(
-        margin=dict(l=0, r=0, t=0, b=0),
-        legend=dict(title="Group", orientation="h", yanchor="bottom", y=-0.15, x=0),
+        margin=dict(l=0, r=0, t=0, b=52),
+        legend=dict(title="Group", orientation="h", yanchor="bottom", y=-0.12, x=0),
     )
     st.plotly_chart(map_fig, width="stretch")
 
@@ -953,13 +1074,11 @@ _quant_section_h2("who-is-carrying-the-burden", "Who's carrying the burden?")
 
 st.markdown(
     """
-    <div style="font-size: 1.0rem; line-height: 1.62; color: #18312d;">
+    <div style="font-size: 1.2rem; line-height: 1.62; color: #18312d;">
     <p style="margin: 0;">
-    Historical redlining and related credit-market discrimination concentrated Black residents in particular neighborhoods where
-    families acquired housing and passed it down across generations. Tangled title—ownership left unsettled
-    when property moves through intestate succession and informal, generational handoffs without a clear
-    legal chain—is fundamentally a problem of that intergenerational transfer of assets. It does not
-    occur at random across homeowners; it structurally skews toward Black homeowners.
+    Historical redlining and related credit-market discrimination concentrated Black residents in particular neighborhoods where families acquired housing and passed it down across generations.<br>
+    Tangled title—ownership left unsettled when property moves through intestate succession and informal, generational handoffs without a clear legal chain—is fundamentally a problem of that intergenerational transfer of assets.<br>
+    It does not occur at random across homeowners; it structurally skews toward Black homeowners.
     </p>
     </div>
     """,
@@ -1055,27 +1174,33 @@ with group_hist_right:
     st.markdown("#### Tract distribution across Baltimore")
     render_intersectionality_group_map(tracts, geojson)
 
-# -----------------------------------------------------------------------------
-# Black population × property value scatter (still under Who's carrying the burden? H2)
-# -----------------------------------------------------------------------------
-st.markdown(
-    "Tract-level relationship between **Black population share** and **median property value for "
-    "Black applicants** (FFIEC HMDA). Bubble size reflects **tangled-title properties per 1,000 properties** "
-    "(ACS 2019 5-year B25003_001 occupied housing units as denominator); color marks the intersectionality group. "
-    "Use this to read RQ1 — baseline Black property wealth at risk — alongside the tangled-title burden seen above."
-)
-render_black_homeownership_chart(tracts)
+st.divider()
 
 # =============================================================================
-# H2: Intersectionality Analysis
+# H2: Impact of Historical Disadvantage and Contemporary Disadvantage
 # =============================================================================
-_quant_section_h2("intersectionality-analysis", "Intersectionality Analysis")
-st.markdown("#### Metric distributions by intersectionality group")
-st.caption(
-    "Compare how tract-level metrics vary across the four intersectionality groups. "
-    "Use the dropdown to switch between burden, equity, demographic, and property-value metrics."
+
+_quant_section_h2(
+    "impact-of-historical-contemporary-disadvantage",
+    "Impact of Historical Disadvantage and Contemporary Disadvantage",
 )
-render_group_boxplots(tracts)
+
+# -----------------------------------------------------------------------------
+# Scatter (left) + boxplots (right), under Impact of Historical / Contemporary Disadvantage H2
+# -----------------------------------------------------------------------------
+scatter_col, boxplot_col = st.columns(2, gap="medium")
+with scatter_col:
+    st.markdown("### Black population share and median property value for Black applicants")
+    st.markdown(
+        "Bubble size reflects tangled-title properties per 1,000 total properties."
+    )
+    render_black_homeownership_chart(tracts)
+with boxplot_col:
+    st.markdown("### Metric distributions by intersectionality group")
+    st.caption(
+        "Compare how tract-level metrics vary across the four intersectionality groups."
+    )
+    render_group_boxplots(tracts)
 
 # =============================================================================
 # Scroll spy: inject script (st.iframe) for sidebar "On this page" highlighting
