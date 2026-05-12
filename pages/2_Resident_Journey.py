@@ -1,9 +1,14 @@
 import base64
 import mimetypes
+import sys
 from html import escape
 from pathlib import Path
 
 import streamlit as st
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from shared_style import apply_theme, render_page_toc, section_h2
 from tangled_titles_content import RESIDENT_JOURNEY_STAGES, TASHA_JOURNEY_OVERVIEW_IMAGE
@@ -19,7 +24,7 @@ JOURNEY_TOC = (
 )
 render_page_toc("resident-journey", JOURNEY_TOC)
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+BASE_DIR = ROOT_DIR
 
 
 def render_stage_image(stage: dict[str, str], idx: int) -> None:

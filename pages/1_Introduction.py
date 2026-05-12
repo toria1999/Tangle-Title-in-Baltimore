@@ -1,4 +1,11 @@
+import sys
+from pathlib import Path
+
 import streamlit as st
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from shared_style import apply_theme, render_page_toc, section_h2, support_badge
 from tangled_titles_content import GLOSSARY_TERMS, PROBLEM_PATHWAY_DETAIL, TITLE_COMPARISON

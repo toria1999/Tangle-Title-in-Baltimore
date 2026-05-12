@@ -7,9 +7,13 @@ titles in Baltimore.
 ## Run Locally
 
 ```bash
-cd "/Users/torialiu/Documents/New project/tangled-title-site"
-.venv/bin/streamlit run Instruction.py
+cd "/Users/torialiu/Downloads/Tangle-Title-in-Baltimore"
+streamlit run streamlit_app.py
 ```
+
+`Instruction.py` is the app's main page. `streamlit_app.py` is a thin wrapper
+for Streamlit Cloud and other hosts so the deployment does not accidentally use
+one of the files inside `pages/` as the entry point.
 
 ### On Windows
 
@@ -19,7 +23,7 @@ From the repository root, run:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-streamlit run Instruction.py
+streamlit run streamlit_app.py
 ```
 
 ## Replace Placeholder Data
