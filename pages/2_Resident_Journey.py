@@ -206,21 +206,8 @@ st.markdown(
     records fall out of sync, when a repair application requires proof of
     ownership, when tax payments and notices move through systems tied to a
     deceased owner's name, and when tax sale or foreclosure risk brings market
-    actors to the doorstep. Solutions and intervention recommendations are
-    intentionally kept out of this section and remain in the final intervention
-    sections elsewhere in the site.
+    actors to the doorstep. 
     """
-)
-st.markdown(
-    """
-    <div class="takeaway">
-    Tasha's story shows how a hidden title mismatch becomes visible through
-    repair systems, tax systems, and market pressure. The next pages show how
-    interview evidence and spatial data connect this story to broader patterns
-    in Baltimore.
-    </div>
-    """,
-    unsafe_allow_html=True,
 )
 
 st.markdown("### Baltimore-scale context")

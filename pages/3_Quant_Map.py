@@ -71,6 +71,13 @@ GROUP_LABELS = {
 }
 GROUP_ORDER = list(GROUP_LABELS.keys())
 DISPLAY_GROUP_ORDER = [GROUP_LABELS[group] for group in GROUP_ORDER]
+GROUP_SHORT_LABELS = {
+    "Historically advantaged + currently advantaged": "Hist. adv.<br>Current adv.",
+    "Historically disadvantaged + currently advantaged": "Hist. disadv.<br>Current adv.",
+    "Historically advantaged + currently disadvantaged": "Hist. adv.<br>Current disadv.",
+    "Historically disadvantaged + currently disadvantaged": "Hist. disadv.<br>Current disadv.",
+    "Excluded / insufficient data": "Excluded<br>/ insufficient data",
+}
 GROUP_COLORS = {
     "Historically advantaged + currently advantaged": "#a9c77b",
     "Historically disadvantaged + currently advantaged": "#f0c56a",
@@ -605,12 +612,13 @@ def render_demographic_property_value_map(
 def render_quadrant_diagram() -> None:
     fig = go.Figure()
 
-    # Four filled quadrants with dividing lines.
+    # Four filled quadrants with dividing lines. Internal labels are intentionally
+    # short so they remain legible when the Streamlit column narrows.
     quadrants = [
-        ("Historically disadvantaged + currently advantaged", 0.0, 0.5, 0.5, 1.0, "Redlining legacy", "Current advantage"),
-        ("Historically advantaged + currently advantaged", 0.5, 1.0, 0.5, 1.0, "Less redlining legacy", "Current advantage"),
-        ("Historically disadvantaged + currently disadvantaged", 0.0, 0.5, 0.0, 0.5, "Redlining legacy", "Current disadvantage"),
-        ("Historically advantaged + currently disadvantaged", 0.5, 1.0, 0.0, 0.5, "Less redlining legacy", "Current disadvantage"),
+        ("Historically disadvantaged + currently advantaged", "Hist. disadvantaged<br>+ current advantaged", 0.0, 0.5, 0.5, 1.0, "Redlining legacy", "Current advantage"),
+        ("Historically advantaged + currently advantaged", "Hist. advantaged<br>+ current advantaged", 0.5, 1.0, 0.5, 1.0, "Less redlining legacy", "Current advantage"),
+        ("Historically disadvantaged + currently disadvantaged", "Hist. disadvantaged<br>+ current disadvantaged", 0.0, 0.5, 0.0, 0.5, "Redlining legacy", "Current disadvantage"),
+        ("Historically advantaged + currently disadvantaged", "Hist. advantaged<br>+ current disadvantaged", 0.5, 1.0, 0.0, 0.5, "Less redlining legacy", "Current disadvantage"),
     ]
     group_color_key = {
         "Historically disadvantaged + currently advantaged": "Historically disadvantaged + currently advantaged",
@@ -625,7 +633,7 @@ def render_quadrant_diagram() -> None:
         "Historically advantaged + currently disadvantaged": "#ffffff",
     }
 
-    for title, x0, x1, y0, y1, line2, line3 in quadrants:
+    for title, short_title, x0, x1, y0, y1, line2, line3 in quadrants:
         fill = GROUP_COLORS[group_color_key[title]]
         fig.add_shape(
             type="rect",
@@ -641,24 +649,27 @@ def render_quadrant_diagram() -> None:
         cy = (y0 + y1) / 2
         fig.add_annotation(
             x=cx,
-            y=cy + 0.12,
-            text=f"<b>{title.replace(' + ', '<br>+<br>')}</b>",
+            y=cy + 0.105,
+            text=f"<b>{short_title}</b>",
             showarrow=False,
-            font=dict(size=17, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            font=dict(size=12, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            align="center",
         )
         fig.add_annotation(
             x=cx,
-            y=cy + 0.03,
+            y=cy - 0.015,
             text=f"<b>{line2}</b>",
             showarrow=False,
-            font=dict(size=13, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            font=dict(size=10, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            align="center",
         )
         fig.add_annotation(
             x=cx,
-            y=cy - 0.07,
+            y=cy - 0.105,
             text=f"<b>{line3}</b>",
             showarrow=False,
-            font=dict(size=13, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            font=dict(size=10, color=text_color[title], family="Source Sans Pro, sans-serif"),
+            align="center",
         )
 
     # Crosshair between quadrants.
@@ -710,7 +721,7 @@ def render_quadrant_diagram() -> None:
         yref="y",
         text="<b>Contemporary<br>Segregation</b>",
         showarrow=False,
-        font=dict(size=18, color="#6d3c1d", family="Source Sans Pro, sans-serif"),
+        font=dict(size=15, color="#6d3c1d", family="Source Sans Pro, sans-serif"),
         xanchor="right",
         yanchor="middle",
     )
@@ -721,7 +732,7 @@ def render_quadrant_diagram() -> None:
         yref="y",
         text="<b>Advantage</b><br>(High ICE scores)",
         showarrow=False,
-        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        font=dict(size=10, color="#101010", family="Source Sans Pro, sans-serif"),
         xanchor="right",
         yanchor="middle",
     )
@@ -732,7 +743,7 @@ def render_quadrant_diagram() -> None:
         yref="y",
         text="<b>Disadvantage</b><br>(Low ICE scores)",
         showarrow=False,
-        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        font=dict(size=10, color="#101010", family="Source Sans Pro, sans-serif"),
         xanchor="right",
         yanchor="middle",
     )
@@ -741,7 +752,7 @@ def render_quadrant_diagram() -> None:
         y=-0.046,
         text="<b>Historical Redlining</b>",
         showarrow=False,
-        font=dict(size=17, color="#9a2f23", family="Source Sans Pro, sans-serif"),
+        font=dict(size=15, color="#9a2f23", family="Source Sans Pro, sans-serif"),
         xanchor="center",
         yanchor="top",
     )
@@ -750,7 +761,7 @@ def render_quadrant_diagram() -> None:
         y=-0.10,
         text="<b>Disadvantage</b><br>(HOLC Grades C/D)",
         showarrow=False,
-        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        font=dict(size=10, color="#101010", family="Source Sans Pro, sans-serif"),
         xanchor="center",
         yanchor="top",
     )
@@ -759,7 +770,7 @@ def render_quadrant_diagram() -> None:
         y=-0.10,
         text="<b>Advantage</b><br>(HOLC Grades A/B)",
         showarrow=False,
-        font=dict(size=11, color="#101010", family="Source Sans Pro, sans-serif"),
+        font=dict(size=10, color="#101010", family="Source Sans Pro, sans-serif"),
         xanchor="center",
         yanchor="top",
     )
@@ -768,7 +779,7 @@ def render_quadrant_diagram() -> None:
     fig.update_yaxes(range=[-0.24, 1.06], visible=False, fixedrange=True)
     fig.update_layout(
         height=_QUADRANT_GROUP_MAP_ROW_FIG_HEIGHT_PX,
-        margin=dict(l=132, r=36, t=24, b=106),
+        margin=dict(l=118, r=24, t=18, b=96),
         plot_bgcolor="#fff9e6",
         paper_bgcolor="#fff9e6",
         showlegend=False,
@@ -935,12 +946,12 @@ def render_group_boxplots(
         yaxis_kwargs["tickformat"] = ".2f"
 
     xaxis_ticktext = [
-        f"{group}<br><span style='font-size:11px;color:#5d6a64'>n={group_counts[group]}</span>"
+        f"{GROUP_SHORT_LABELS[group]}<br><span style='font-size:10px;color:#5d6a64'>n={group_counts[group]}</span>"
         for group in DISPLAY_GROUP_ORDER
     ]
     fig.update_layout(
         height=_IMPACT_SCATTER_BOXPLOT_ROW_FIG_HEIGHT_PX,
-        margin=dict(l=10, r=10, t=70, b=10),
+        margin=dict(l=10, r=10, t=70, b=84),
         plot_bgcolor="#fff9e6",
         paper_bgcolor="#fff9e6",
         showlegend=False,
@@ -951,6 +962,8 @@ def render_group_boxplots(
             tickmode="array",
             tickvals=DISPLAY_GROUP_ORDER,
             ticktext=xaxis_ticktext,
+            tickfont=dict(size=10),
+            automargin=True,
         ),
         yaxis=yaxis_kwargs,
     )
