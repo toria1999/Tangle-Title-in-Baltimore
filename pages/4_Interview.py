@@ -1,8 +1,10 @@
 import sys
+import json
 from html import escape
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
@@ -17,11 +19,6 @@ from tangled_titles_content import (
     THEME_LEVEL_ORDER,
     nodes_for_theme,
 )
-try:
-    from tangled_titles_content import TRANSCRIPT_RECURRING_TERMS
-except ImportError:
-    TRANSCRIPT_RECURRING_TERMS = []
-
 
 st.set_page_config(page_title="Interview", layout="wide")
 apply_theme()
@@ -73,124 +70,167 @@ def render_theme_card(theme: dict, compact: bool = False) -> None:
     st.caption(theme["implications"])
 
 
-def interview_word_frequencies(themes: list[dict]) -> list[tuple[str, int]]:
-    stopwords = {
-        "and", "the", "that", "with", "they", "this", "from", "when", "have", "into",
-        "title", "titles", "tangled", "residents", "property", "home", "homes", "house", "baltimore", "legal",
-        "because", "their", "can", "not", "are", "for", "after", "through", "about",
-        "often", "may", "issue", "issues", "people", "resident", "ownership",
-        "just", "many", "most", "then", "even", "what", "your", "know", "like",
-        "don't", "cant", "can't", "it's", "them", "able",
-    }
-    aliases = {
-        "probate": "probate",
-        "repair": "repairs",
-        "repairs": "repairs",
-        "home repair": "repairs",
-        "repair grant": "repair grants",
-        "family": "family",
-        "siblings": "family conflict",
-        "tax": "taxes",
-        "taxes": "taxes",
-        "property tax": "taxes",
-        "sale": "tax sale",
-        "tax sale": "tax sale",
-        "estate": "estate planning",
-        "planning": "estate planning",
-        "deed": "deed transfer",
-        "deeds": "deed transfer",
-        "deed transfer": "deed transfer",
-        "equity": "home equity",
-        "wealth": "wealth loss",
-        "black": "Black Butterfly",
-        "butterfly": "Black Butterfly",
-        "outreach": "community outreach",
-        "referral": "warm handoff",
-        "handoff": "warm handoff",
-        "documents": "document burden",
-        "document": "document burden",
-        "digital": "digital divide",
-        "seniors": "fixed-income seniors",
-        "fixed": "fixed-income seniors",
-        "foreclosure": "foreclosure",
-        "heirs": "heirs' property",
-        "heir": "heirs' property",
-        "heirs property": "heirs' property",
-        "will": "wills",
-        "wills": "wills",
-        "legal aid": "legal help",
-        "services": "legal help",
-        "mediation": "legal help",
-    }
-    removed_terms = stopwords | {"services"}
-
-    def normalize_term(term: str) -> str | None:
-        cleaned = term.lower().strip().replace("’", "'")
-        cleaned = cleaned.strip("!?;:()[]\"'")
-        if not cleaned or cleaned in removed_terms:
-            return None
-        normalized = aliases.get(cleaned, cleaned)
-        if normalized.lower() in removed_terms:
-            return None
-        return normalized
-
-    counts: dict[str, int] = {}
-    for theme in themes:
-        text = " ".join([theme["title"], theme["short_summary"], " ".join(theme["key_quotes"])]).lower()
-        for raw in text.replace("/", " ").replace("-", " ").replace(",", " ").replace(".", " ").split():
-            term = normalize_term(raw)
-            if not term or len(term) < 4:
-                continue
-            counts[term] = counts.get(term, 0) + 1
-    for theme_label, quote, _theme_id, _node_id in QUOTE_WALL_ITEMS:
-        label_term = normalize_term(theme_label)
-        if label_term:
-            counts[label_term] = counts.get(label_term, 0) + 2
-        for word in quote.lower().replace(",", " ").replace(".", " ").split():
-            term = normalize_term(word)
-            if term:
-                counts[term] = counts.get(term, 0) + 1
-    for term, count in TRANSCRIPT_RECURRING_TERMS:
-        normalized = normalize_term(term)
-        if normalized:
-            counts[normalized] = counts.get(normalized, 0) + count
-    return sorted(counts.items(), key=lambda item: item[1], reverse=True)[:42]
+WORD_CLOUD_TERMS = [
+    {
+        "text": "repairs",
+        "value": 58,
+        "theme": "Home repair barriers",
+        "description": "Repair needs often reveal title problems because assistance programs usually require proof of ownership.",
+        "quote": "One of the conditions of receiving home repair funding in the city, in particular, is that you have to have a clear title.",
+    },
+    {
+        "text": "deed transfer",
+        "value": 54,
+        "theme": "Ownership mismatch",
+        "description": "The deed is the formal record that systems use to decide who is recognized as the homeowner.",
+        "quote": "They know that their mom is on the deed. But they assume that they are the owner and it's fine.",
+    },
+    {
+        "text": "estate planning",
+        "value": 52,
+        "theme": "Prevention",
+        "description": "Wills, life estate deeds, and transfer-on-death tools can prevent some tangled title problems before death.",
+        "quote": "If people had their wills and they had life estate deeds, this would not be an issue.",
+    },
+    {"text": "family", "value": 48, "theme": "Family inheritance", "description": "Interviewees repeatedly framed the home as family memory, family responsibility, and family wealth.", "quote": ""},
+    {"text": "wills", "value": 44, "theme": "Estate planning", "description": "Wills help clarify who should receive the home, reducing later disagreement and uncertainty.", "quote": ""},
+    {"text": "heirs' property", "value": 42, "theme": "Inheritance structure", "description": "Multiple heirs can hold interests in a property even when one person lives there and maintains it.", "quote": ""},
+    {"text": "taxes", "value": 39, "theme": "Tax burden", "description": "Property taxes and water bills can become harder to manage when residents lack owner-occupied protections.", "quote": ""},
+    {"text": "income", "value": 36, "theme": "Economic constraint", "description": "Fixed or low incomes make legal fees, repairs, and tax payments harder to absorb.", "quote": ""},
+    {"text": "death", "value": 34, "theme": "Trigger point", "description": "A title often becomes tangled after a homeowner dies and no formal transfer is completed.", "quote": ""},
+    {"text": "family conflict", "value": 33, "theme": "Interpersonal barrier", "description": "Disagreement among siblings or heirs can stall probate, repair decisions, or title clearing.", "quote": "If they can't come to consensus, then in many ways the property may sit in limbo."},
+    {"text": "tax sale", "value": 32, "theme": "Tax sale risk", "description": "Tax sale can turn unpaid bills into foreclosure pressure, especially when notices go to the titled owner.", "quote": ""},
+    {"text": "foreclosure", "value": 30, "theme": "Housing loss risk", "description": "Tangled title can make it harder for the resident to defend the property when foreclosure pressure appears.", "quote": ""},
+    {"text": "probate", "value": 29, "theme": "Legal process", "description": "Probate or estate administration is often needed before a deceased owner's property can transfer.", "quote": "People don't even know they need to go to the Register of Wills."},
+    {"text": "home equity", "value": 27, "theme": "Wealth access", "description": "When title is unclear, residents may be unable to borrow against or otherwise use home equity.", "quote": ""},
+    {"text": "wealth loss", "value": 26, "theme": "Intergenerational wealth", "description": "Tangled titles can interrupt the transfer of family wealth across generations.", "quote": ""},
+    {"text": "vacant housing", "value": 24, "theme": "Neighborhood impact", "description": "Unresolved title and repair barriers can contribute to deterioration, vacancy, and neighborhood instability.", "quote": ""},
+    {"text": "legal help", "value": 23, "theme": "Facilitator", "description": "Legal aid, mediation, and holistic services help residents navigate probate, deeds, and tax sale risk.", "quote": ""},
+    {"text": "community outreach", "value": 22, "theme": "Trusted access", "description": "Interviewees emphasized meeting residents in neighborhoods instead of waiting for residents to find services.", "quote": "Instead of waiting for people to come to you, go to them."},
+    {"text": "shelter", "value": 21, "theme": "Housing stability", "description": "The home is not only an asset; for many residents it is their primary affordable shelter.", "quote": "One of the most important things that people are actually getting from these homes is shelter."},
+    {"text": "Black Butterfly", "value": 20, "theme": "Spatial inequality", "description": "Interviewees linked tangled title risk to Baltimore's racialized geography and historic disinvestment.", "quote": "Most of the times it is the Black Butterfly region."},
+    {"text": "records", "value": 19, "theme": "Administrative mismatch", "description": "Public records may continue to name deceased or absent owners rather than the person living in the home.", "quote": ""},
+    {"text": "access", "value": 18, "theme": "Program eligibility", "description": "Clear title often controls access to grants, credits, loans, legal protections, and notices.", "quote": ""},
+    {"text": "fixed-income seniors", "value": 17, "theme": "Compounded risk", "description": "Older homeowners on fixed incomes can face overlapping repair, tax, legal, and digital burdens.", "quote": ""},
+    {"text": "asset", "value": 16, "theme": "Family wealth", "description": "A modest home can still be the family's largest asset and a foundation for future stability.", "quote": ""},
+    {"text": "transportation", "value": 14, "theme": "Administrative burden", "description": "Getting to offices, clinics, or document appointments can be another barrier in the title-clearing process.", "quote": "Transportation is a big issue."},
+    {"text": "clearing", "value": 13, "theme": "Title resolution", "description": "Title clearing can require documents, legal help, heir outreach, and time.", "quote": ""},
+    {"text": "consensus", "value": 12, "theme": "Joint decision-making", "description": "When several heirs have interests, repair, transfer, or sale decisions may require agreement.", "quote": ""},
+]
 
 
-def render_interview_word_cloud(themes: list[dict]) -> None:
-    terms = interview_word_frequencies(themes)
-    max_count = max(count for _term, count in terms)
-    colors = ["#294943", "#6b5637", "#b88a2d", "#5e8fa8", "#3f6f5c", "#8a6a3f"]
-    spans = []
-    for idx, (term, count) in enumerate(terms):
-        size = 0.82 + 1.18 * (count / max_count)
-        weight = 650 if count >= 12 else 560
-        color = colors[idx % len(colors)]
-        spans.append(
-            f'<span title="{escape(str(count))} transcript mentions" '
-            f'style="font-size:{size:.2f}rem; font-weight:{weight}; color:{color};">'
-            f'{escape(term)}</span>'
-        )
-    st.markdown(
+def render_interactive_word_cloud_panel(terms: list[dict]) -> None:
+    cloud_terms = sorted(terms, key=lambda item: item["value"], reverse=True)[:30]
+    payload = json.dumps(cloud_terms).replace("</", "<\\/")
+    components.html(
         f"""
-        <div style="
-            background:#fffaf0;
-            border:1px solid rgba(24,49,45,0.16);
-            border-radius:12px;
-            padding:1.35rem 1.45rem;
-            line-height:1.35;
-            display:flex;
-            flex-wrap:wrap;
-            gap:0.56rem 0.92rem;
-            align-items:baseline;
-        ">
-            {"".join(spans)}
+        <div class="cloud-card">
+            <svg id="word-cloud" viewBox="0 0 920 390" role="img" aria-label="Interactive interview word cloud"></svg>
+            <div id="cloud-detail" class="cloud-detail">
+                <strong>Select a word</strong>
+                <p>Click any term in the cloud to see its theme and interpretation.</p>
+            </div>
         </div>
-        <p class="muted-note" style="margin-top:0.65rem;">
-            Terms were cleaned and grouped to emphasize analytically meaningful interview language rather than raw transcript frequency.
-        </p>
+        <style>
+            body {{
+                margin: 0;
+                background: transparent;
+                font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            }}
+            .cloud-card {{
+                background: radial-gradient(circle at 45% 35%, #fffdf6 0%, #fffaf0 52%, #f7efd8 100%);
+                border: 1px solid rgba(24, 49, 45, 0.16);
+                border-radius: 16px;
+                box-shadow: 0 12px 28px rgba(24, 49, 45, 0.08);
+                padding: 14px 16px 16px;
+            }}
+            #word-cloud {{
+                width: 100%;
+                height: 390px;
+                display: block;
+            }}
+            .cloud-word {{
+                cursor: pointer;
+                dominant-baseline: middle;
+                text-anchor: middle;
+                paint-order: stroke;
+                stroke: rgba(255, 250, 240, 0.78);
+                stroke-width: 4px;
+                transition: opacity 160ms ease, transform 160ms ease, filter 160ms ease;
+            }}
+            .cloud-word:hover, .cloud-word.active {{
+                opacity: 1 !important;
+                filter: drop-shadow(0 3px 5px rgba(24, 49, 45, 0.24));
+            }}
+            .cloud-detail {{
+                min-height: 82px;
+                margin: 4px 6px 0;
+                padding: 0.85rem 1rem;
+                border-left: 5px solid #b88a2d;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.72);
+                color: #18312d;
+                font-size: 0.98rem;
+                line-height: 1.45;
+            }}
+            .cloud-detail p {{
+                margin: 0.32rem 0 0;
+            }}
+            .cloud-detail .quote {{
+                margin-top: 0.45rem;
+                color: #5f6b64;
+                font-style: italic;
+            }}
+        </style>
+        <script>
+            const terms = {payload};
+            const svg = document.getElementById("word-cloud");
+            const detail = document.getElementById("cloud-detail");
+            const colors = ["#294943", "#6b5637", "#b88a2d", "#5e8fa8", "#8f4f4b"];
+            const positions = [
+                [460, 186], [292, 150], [608, 154], [405, 104], [530, 92], [198, 222],
+                [710, 226], [355, 250], [574, 256], [132, 140], [796, 148], [246, 292],
+                [672, 306], [452, 304], [82, 250], [842, 268], [186, 86], [742, 82],
+                [326, 344], [592, 346], [86, 78], [846, 72], [458, 44], [700, 374],
+                [226, 374], [560, 40], [360, 46], [106, 330], [812, 340], [462, 358]
+            ];
+            const minValue = Math.min(...terms.map(d => d.value));
+            const maxValue = Math.max(...terms.map(d => d.value));
+
+            function fontSize(value) {{
+                const scaled = (value - minValue) / Math.max(1, maxValue - minValue);
+                return 18 + scaled * 26;
+            }}
+
+            function showDetail(term, element) {{
+                document.querySelectorAll(".cloud-word").forEach(node => node.classList.remove("active"));
+                element.classList.add("active");
+                const quote = term.quote ? `<p class="quote">"${{term.quote}}"</p>` : "";
+                detail.innerHTML = `
+                    <strong>${{term.text}}</strong>
+                    <p><b>Theme:</b> ${{term.theme}}</p>
+                    <p>${{term.description}}</p>
+                    ${{quote}}
+                `;
+            }}
+
+            terms.forEach((term, index) => {{
+                const [x, y] = positions[index % positions.length];
+                const word = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                word.textContent = term.text;
+                word.setAttribute("x", x);
+                word.setAttribute("y", y);
+                word.setAttribute("font-size", fontSize(term.value));
+                word.setAttribute("font-weight", term.value >= 30 ? 720 : 610);
+                word.setAttribute("fill", colors[index % colors.length]);
+                word.setAttribute("class", "cloud-word");
+                word.style.opacity = String(0.76 + Math.min(0.2, term.value / 250));
+                word.addEventListener("click", () => showDetail(term, word));
+                svg.appendChild(word);
+            }});
+        </script>
         """,
-        unsafe_allow_html=True,
+        height=540,
     )
 
 
@@ -315,14 +355,42 @@ for col, (title, explanation, quote) in zip(cols, message_cards):
 section_h2("interview-word-cloud", "What Came Up Repeatedly in Interviews")
 st.markdown(
     """
-    <p class="section-subtitle">This word cloud offers a quick orientation to recurring interview language. It is not a substitute for the themes, quotes, and resident narratives below.</p>
+    <p class="section-subtitle">This interactive word cloud offers a quick orientation to recurring interview language. It is not a substitute for the themes, quotes, and resident narratives below.</p>
     """
     ,
     unsafe_allow_html=True,
 )
 
 with st.expander("Explore recurring words from interviews", expanded=False):
-    render_interview_word_cloud(INTERVIEW_THEMES)
+    render_interactive_word_cloud_panel(WORD_CLOUD_TERMS)
+    term_options = {term["text"]: term for term in WORD_CLOUD_TERMS}
+    selected_word = st.selectbox(
+        "Explore a term",
+        ["Choose a term"] + [term["text"] for term in WORD_CLOUD_TERMS],
+        key="word-cloud-term-select",
+    )
+    if selected_word != "Choose a term":
+        term = term_options[selected_word]
+        quote_html = (
+            f'<div class="mini-quote" style="margin-top:0.65rem;">"{escape(term["quote"])}"</div>'
+            if term.get("quote")
+            else ""
+        )
+        st.markdown(
+            f"""
+            <div class="detail-panel">
+                <span class="rq-badge">Selected term</span>
+                <h3>{escape(term["text"])}</h3>
+                <p><strong>Theme:</strong> {escape(term["theme"])}</p>
+                <p>{escape(term["description"])}</p>
+                {quote_html}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    st.caption(
+        "Terms were cleaned and grouped to emphasize analytically meaningful interview language rather than raw transcript frequency."
+    )
 
 with st.expander("Selected quotes behind the recurring words", expanded=False):
     quote_wall_query = st.text_input("Search selected quotes", key="quote-wall-search")
