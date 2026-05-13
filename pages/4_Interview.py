@@ -13,11 +13,14 @@ from tangled_titles_content import (
     INTERVIEW_THEMES,
     NODE_BY_ID,
     QUOTE_WALL_ITEMS,
-    TRANSCRIPT_RECURRING_TERMS,
     THEME_BY_ID,
     THEME_LEVEL_ORDER,
     nodes_for_theme,
 )
+try:
+    from tangled_titles_content import TRANSCRIPT_RECURRING_TERMS
+except ImportError:
+    TRANSCRIPT_RECURRING_TERMS = []
 
 
 st.set_page_config(page_title="Interview", layout="wide")

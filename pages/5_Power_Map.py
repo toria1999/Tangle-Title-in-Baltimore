@@ -15,13 +15,16 @@ from tangled_titles_content import (
     LEVEL_ORDER,
     NODE_BY_ID,
     POWER_NODES,
-    QUALITATIVE_SLIDE_RESOURCE_LINKS,
     STRUCTURAL_SUBLEVELS,
     SYSTEM_TOUCHPOINT_LANES,
     THEME_BY_ID,
     related_quotes_for_node,
     themes_for_node,
 )
+try:
+    from tangled_titles_content import QUALITATIVE_SLIDE_RESOURCE_LINKS
+except ImportError:
+    QUALITATIVE_SLIDE_RESOURCE_LINKS = []
 
 
 st.set_page_config(page_title="Power Map", layout="wide")
