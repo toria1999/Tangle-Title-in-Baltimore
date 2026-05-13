@@ -62,20 +62,22 @@ _QUADRANT_GROUP_MAP_ROW_FIG_HEIGHT_PX = 480
 # Black population scatter + intersectionality boxplots (same Streamlit row): matched Plotly height.
 _IMPACT_SCATTER_BOXPLOT_ROW_FIG_HEIGHT_PX = 520
 
-GROUP_COLORS = {
-    "Sustained advantage": "#a9c77b",
-    "Contemporary advantage": "#f0c56a",
-    "Previous advantage": "#e58b60",
-    "Sustained disadvantage": "#8f3d46",
-    "Excluded from analysis": "#b9b9b9",
+GROUP_LABELS = {
+    "Sustained advantage": "Historically advantaged + currently advantaged",
+    "Contemporary advantage": "Historically disadvantaged + currently advantaged",
+    "Previous advantage": "Historically advantaged + currently disadvantaged",
+    "Sustained disadvantage": "Historically disadvantaged + currently disadvantaged",
+    "Excluded from analysis": "Excluded / insufficient data",
 }
-GROUP_ORDER = [
-    "Sustained advantage",
-    "Contemporary advantage",
-    "Previous advantage",
-    "Sustained disadvantage",
-    "Excluded from analysis",
-]
+GROUP_ORDER = list(GROUP_LABELS.keys())
+DISPLAY_GROUP_ORDER = [GROUP_LABELS[group] for group in GROUP_ORDER]
+GROUP_COLORS = {
+    "Historically advantaged + currently advantaged": "#a9c77b",
+    "Historically disadvantaged + currently advantaged": "#f0c56a",
+    "Historically advantaged + currently disadvantaged": "#e58b60",
+    "Historically disadvantaged + currently disadvantaged": "#8f3d46",
+    "Excluded / insufficient data": "#b9b9b9",
+}
 
 # Column specs for `render_group_boxplots` (label -> column name, axis unit, value tick format).
 # Dict order is the selectbox order; Black population is first by default.
@@ -105,7 +107,7 @@ _QUANT_TOC_H2: tuple[tuple[str, str], ...] = (
     ("historical-context", "Historical Context"),
     (
         "impact-of-historical-contemporary-disadvantage",
-        "Impact of Historical Disadvantage and Contemporary Disadvantage",
+        "Measuring the impact of historical redlining disadvantage and contemporary segregation disadvantage",
     ),
 )
 
@@ -389,6 +391,9 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
     ).copy()
     if "intersectionality_group" in chart_df.columns:
         chart_df["intersectionality_group"] = chart_df["intersectionality_group"].fillna("Excluded from analysis")
+        chart_df["intersectionality_group_display"] = (
+            chart_df["intersectionality_group"].map(GROUP_LABELS).fillna("Excluded / insufficient data")
+        )
 
     has_population = "total_population" in chart_df.columns
     has_total = "total_properties" in chart_df.columns
@@ -433,8 +438,8 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
         hover_data["total_properties"] = ":,.0f"
     if size_col == "tangled_properties_per_1000":
         hover_data["tangled_properties_per_1000"] = ":,.2f"
-    if "intersectionality_group" in plot_df.columns:
-        hover_data["intersectionality_group"] = True
+    if "intersectionality_group_display" in plot_df.columns:
+        hover_data["intersectionality_group_display"] = True
     if size_col not in hover_data:
         hover_data[size_col] = False
 
@@ -450,7 +455,7 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
             "black_population_percentage": "Black population (%)",
             "median_property_value_black": "Median property value, Black applicants (USD)",
             "median_property_value_total": "Median property value, all applicants (USD)",
-            "intersectionality_group": "Intersectionality group",
+            "intersectionality_group_display": "Historical/current disadvantage group",
             "tangled_properties": "Tangled-title properties",
             "total_population": "Total population (ACS B01003_001)",
             "total_properties": "Total properties (ACS B25003_001)",
@@ -458,10 +463,10 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
             "tangled_count_size": size_legend,
         },
     )
-    if "intersectionality_group" in chart_df.columns:
-        scatter_kwargs["color"] = "intersectionality_group"
+    if "intersectionality_group_display" in chart_df.columns:
+        scatter_kwargs["color"] = "intersectionality_group_display"
         scatter_kwargs["color_discrete_map"] = GROUP_COLORS
-        scatter_kwargs["category_orders"] = {"intersectionality_group": GROUP_ORDER}
+        scatter_kwargs["category_orders"] = {"intersectionality_group_display": DISPLAY_GROUP_ORDER}
 
     fig = px.scatter(**scatter_kwargs)
     fig.update_traces(marker=dict(line=dict(width=1, color="#294943"), opacity=0.85))
@@ -471,7 +476,7 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
         plot_bgcolor="#fff9e6",
         paper_bgcolor="#fff9e6",
         legend=dict(
-            title="Group",
+            title="Historical/current disadvantage group",
             orientation="h",
             yanchor="top",
             y=-0.14,
@@ -485,9 +490,9 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
         "Each point is a Baltimore City census tract. **Horizontal axis:** Black population share (%). "
         "**Vertical axis:** FFIEC median property value for Black applicants (USD). "
     )
-    if "intersectionality_group" in chart_df.columns:
+    if "intersectionality_group_display" in chart_df.columns:
         guide += (
-            "**Color:** intersectionality group. **Legend:** click a group name to hide or show that series; "
+            "**Color:** historical/current disadvantage group. **Legend:** click a group name to hide or show that series; "
             "double-click a name to show only that group (double-click again to restore all). "
         )
     guide += f"**Bubble size:** {size_legend.lower()}."
@@ -495,6 +500,12 @@ def render_black_homeownership_chart(tracts: pd.DataFrame | None) -> None:
         guide += (
             " Denominator for the rate is ACS 2019 5-year occupied housing units per tract (B25003_001)."
         )
+    st.markdown(
+        "Each point represents a Baltimore census tract. The plot shows how Black population share, "
+        "median property value for Black applicants, tangled-title burden, and intersectionality group overlap. "
+        "Tracts with higher Black population share tend to cluster in lower property-value ranges, while bubble size "
+        "shows where tangled-title burden is heavier. Use the legend to click groups on or off, or double-click a group to isolate it."
+    )
     st.plotly_chart(fig, width="stretch")
     st.markdown(guide)
     st.caption("Tracts with missing FFIEC median values for Black applicants are omitted from the plot.")
@@ -550,7 +561,10 @@ def render_demographic_property_value_map(
     if "median_property_value_black" in map_data.columns:
         hover_data["median_property_value_black"] = ":$,.0f"
     if "intersectionality_group" in map_data.columns:
-        hover_data["intersectionality_group"] = True
+        map_data["intersectionality_group_display"] = (
+            map_data["intersectionality_group"].map(GROUP_LABELS).fillna("Excluded / insufficient data")
+        )
+        hover_data["intersectionality_group_display"] = True
 
     if axis_unit == "%":
         scale = ["#fff7dc", "#a9c77b", "#294943"]
@@ -575,7 +589,7 @@ def render_demographic_property_value_map(
             "black_population_percentage": "Black population (%)",
             "median_property_value_total": "Median property value, all (USD)",
             "median_property_value_black": "Median property value, Black (USD)",
-            "intersectionality_group": "Intersectionality group",
+            "intersectionality_group_display": "Historical/current disadvantage group",
         },
     )
     cb = dict(title=selected_label)
@@ -593,22 +607,22 @@ def render_quadrant_diagram() -> None:
 
     # Four filled quadrants with dividing lines.
     quadrants = [
-        ("Contemporary Advantage", 0.0, 0.5, 0.5, 1.0, "High Redlining (Disadvantage)", "High Socioeconomic Status"),
-        ("Sustained Advantage", 0.5, 1.0, 0.5, 1.0, "No Redlining (Advantage)", "High Socioeconomic Status"),
-        ("Sustained Disadvantage", 0.0, 0.5, 0.0, 0.5, "High Redlining (Disadvantage)", "Low Socioeconomic Status"),
-        ("Previous Advantage", 0.5, 1.0, 0.0, 0.5, "No Redlining (Advantage)", "Low Socioeconomic Status"),
+        ("Historically disadvantaged + currently advantaged", 0.0, 0.5, 0.5, 1.0, "Redlining legacy", "Current advantage"),
+        ("Historically advantaged + currently advantaged", 0.5, 1.0, 0.5, 1.0, "Less redlining legacy", "Current advantage"),
+        ("Historically disadvantaged + currently disadvantaged", 0.0, 0.5, 0.0, 0.5, "Redlining legacy", "Current disadvantage"),
+        ("Historically advantaged + currently disadvantaged", 0.5, 1.0, 0.0, 0.5, "Less redlining legacy", "Current disadvantage"),
     ]
     group_color_key = {
-        "Contemporary Advantage": "Contemporary advantage",
-        "Sustained Advantage": "Sustained advantage",
-        "Sustained Disadvantage": "Sustained disadvantage",
-        "Previous Advantage": "Previous advantage",
+        "Historically disadvantaged + currently advantaged": "Historically disadvantaged + currently advantaged",
+        "Historically advantaged + currently advantaged": "Historically advantaged + currently advantaged",
+        "Historically disadvantaged + currently disadvantaged": "Historically disadvantaged + currently disadvantaged",
+        "Historically advantaged + currently disadvantaged": "Historically advantaged + currently disadvantaged",
     }
     text_color = {
-        "Contemporary Advantage": "#ffffff",
-        "Sustained Advantage": "#101010",
-        "Sustained Disadvantage": "#ffffff",
-        "Previous Advantage": "#ffffff",
+        "Historically disadvantaged + currently advantaged": "#101010",
+        "Historically advantaged + currently advantaged": "#101010",
+        "Historically disadvantaged + currently disadvantaged": "#ffffff",
+        "Historically advantaged + currently disadvantaged": "#ffffff",
     }
 
     for title, x0, x1, y0, y1, line2, line3 in quadrants:
@@ -628,7 +642,7 @@ def render_quadrant_diagram() -> None:
         fig.add_annotation(
             x=cx,
             y=cy + 0.12,
-            text=f"<b><u>{title}</u></b>",
+            text=f"<b>{title.replace(' + ', '<br>+<br>')}</b>",
             showarrow=False,
             font=dict(size=17, color=text_color[title], family="Source Sans Pro, sans-serif"),
         )
@@ -778,12 +792,15 @@ def render_intersectionality_group_map(tracts: pd.DataFrame | None, geojson: dic
     if "GEOID" in map_data.columns and tract_ids:
         map_data = map_data[map_data["GEOID"].astype(str).isin(tract_ids)].copy()
     if map_data.empty:
-        st.warning("No overlapping tracts to map for intersectionality groups.")
+        st.warning("No overlapping tracts to map for historical/current disadvantage groups.")
         return
 
     map_data["intersectionality_group"] = map_data["intersectionality_group"].fillna("Excluded from analysis")
-    map_data["intersectionality_group"] = pd.Categorical(
-        map_data["intersectionality_group"], categories=GROUP_ORDER, ordered=False
+    map_data["intersectionality_group_display"] = (
+        map_data["intersectionality_group"].map(GROUP_LABELS).fillna("Excluded / insufficient data")
+    )
+    map_data["intersectionality_group_display"] = pd.Categorical(
+        map_data["intersectionality_group_display"], categories=DISPLAY_GROUP_ORDER, ordered=False
     )
 
     map_fig = px.choropleth_map(
@@ -791,12 +808,12 @@ def render_intersectionality_group_map(tracts: pd.DataFrame | None, geojson: dic
         geojson=geojson,
         locations="GEOID",
         featureidkey="properties.GEOID",
-        color="intersectionality_group",
-        category_orders={"intersectionality_group": GROUP_ORDER},
+        color="intersectionality_group_display",
+        category_orders={"intersectionality_group_display": DISPLAY_GROUP_ORDER},
         color_discrete_map=GROUP_COLORS,
         hover_name="GEOID",
         hover_data={
-            "intersectionality_group": True,
+            "intersectionality_group_display": True,
             "tangled_properties": ":,.0f" if "tangled_properties" in map_data.columns else False,
             "at_risk_properties": ":,.0f" if "at_risk_properties" in map_data.columns else False,
         },
@@ -808,7 +825,7 @@ def render_intersectionality_group_map(tracts: pd.DataFrame | None, geojson: dic
     )
     map_fig.update_layout(
         margin=dict(l=0, r=0, t=0, b=52),
-        legend=dict(title="Group", orientation="h", yanchor="bottom", y=-0.12, x=0),
+        legend=dict(title="Historical/current disadvantage group", orientation="h", yanchor="bottom", y=-0.12, x=0),
     )
     st.plotly_chart(map_fig, width="stretch")
 
@@ -856,40 +873,43 @@ def render_group_boxplots(
     if plot_df.empty:
         st.warning("No non-missing values to plot for the selected metric.")
         return
-    plot_df["intersectionality_group"] = pd.Categorical(
-        plot_df["intersectionality_group"], categories=GROUP_ORDER, ordered=True
+    plot_df["intersectionality_group_display"] = (
+        plot_df["intersectionality_group"].map(GROUP_LABELS).fillna("Excluded / insufficient data")
     )
-    plot_df = plot_df.sort_values("intersectionality_group")
+    plot_df["intersectionality_group_display"] = pd.Categorical(
+        plot_df["intersectionality_group_display"], categories=DISPLAY_GROUP_ORDER, ordered=True
+    )
+    plot_df = plot_df.sort_values("intersectionality_group_display")
 
     n_total = len(plot_df)
     group_counts = (
-        plot_df.groupby("intersectionality_group", observed=True)
+        plot_df.groupby("intersectionality_group_display", observed=True)
         .size()
-        .reindex(GROUP_ORDER)
+        .reindex(DISPLAY_GROUP_ORDER)
         .fillna(0)
         .astype(int)
     )
 
     box_hover = {
         "GEOID": True,
-        "intersectionality_group": False,
+        "intersectionality_group_display": False,
         selected_col: (":$,.0f" if axis_unit == "$" else True),
     }
 
     fig = px.box(
         plot_df,
-        x="intersectionality_group",
+        x="intersectionality_group_display",
         y=selected_col,
-        color="intersectionality_group",
-        category_orders={"intersectionality_group": GROUP_ORDER},
+        color="intersectionality_group_display",
+        category_orders={"intersectionality_group_display": DISPLAY_GROUP_ORDER},
         color_discrete_map=GROUP_COLORS,
         points="all",
         hover_data=box_hover,
         labels={
-            "intersectionality_group": "Intersectionality group",
+            "intersectionality_group_display": "Historical/current disadvantage group",
             selected_col: selected_label,
         },
-        title=f"{selected_label} by intersectionality group (n = {n_total} tracts)",
+        title=f"{selected_label} by historical/current disadvantage group (n = {n_total} tracts)",
     )
     fig.update_traces(
         marker=dict(opacity=0.6, size=5, line=dict(width=0.5, color="#294943")),
@@ -916,7 +936,7 @@ def render_group_boxplots(
 
     xaxis_ticktext = [
         f"{group}<br><span style='font-size:11px;color:#5d6a64'>n={group_counts[group]}</span>"
-        for group in GROUP_ORDER
+        for group in DISPLAY_GROUP_ORDER
     ]
     fig.update_layout(
         height=_IMPACT_SCATTER_BOXPLOT_ROW_FIG_HEIGHT_PX,
@@ -929,7 +949,7 @@ def render_group_boxplots(
             title="",
             showgrid=False,
             tickmode="array",
-            tickvals=GROUP_ORDER,
+            tickvals=DISPLAY_GROUP_ORDER,
             ticktext=xaxis_ticktext,
         ),
         yaxis=yaxis_kwargs,
@@ -939,6 +959,11 @@ def render_group_boxplots(
         f"Box = IQR with median line; dashed mark = mean. Each dot is a Baltimore City census tract; "
         f"y-axis shows {selected_label.lower()}. Tracts with missing values for the selected metric "
         "are dropped before counting."
+    )
+    st.markdown(
+        "These box plots show how each metric differs across historical and contemporary disadvantage groups. "
+        "For example, historically and currently disadvantaged tracts tend to have much higher Black population shares, "
+        "while more advantaged groups tend to have lower Black population shares and higher property-value profiles."
     )
 
 
@@ -970,7 +995,7 @@ def render_csa_life_expectancy_loess_panel() -> None:
     st.markdown("### Life expectancy (2018) vs tangled titles by CSA")
     st.caption(
         "Community Statistical Area aggregates: 2018 life expectancy vs tangled titles per 10,000; "
-        "LOESS by intersectionality group (y-axis reversed so higher life expectancy reads toward the bottom)."
+        "LOESS by historical/current disadvantage group (y-axis reversed so higher life expectancy reads toward the bottom)."
     )
     st.image(str(CSA_LEVEL_LE_LOESS_SVG), width="stretch")
 
@@ -1128,6 +1153,38 @@ with intro_text_col:
         unsafe_allow_html=True,
     )
 
+st.markdown(
+    """
+    <div style="border-left: 6px solid #a9c77b; background: rgba(241,247,223,0.9); border-radius: 8px; padding: 0.95rem 1.1rem; margin: 1rem 0 1.25rem;">
+        <strong>Key takeaways</strong>
+        <ul style="margin-bottom: 0;">
+            <li>A high proportion of Baltimore's Black population lives in areas shaped by both historical redlining and contemporary segregation.</li>
+            <li>In areas where Black residents are concentrated, median property values are often substantially lower, commonly about 2-3 times lower than values in whiter or more advantaged areas.</li>
+            <li>Tangled titles can affect health because unstable ownership can limit housing repair, wealth protection, residential stability, and the ability to recover from neighborhood-level disadvantage.</li>
+            <li>The decomposition/intersectionality approach separates historical disadvantage from contemporary segregation, helping show whether today's property burden reflects past redlining, current segregation, or their combined effect.</li>
+        </ul>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+with st.expander("At-risk property definition", expanded=False):
+    st.markdown(
+        """
+        There is no broadly adopted standard method for measuring tangled titles.
+        BWDC adopted PropertyRadar-based criteria to identify properties likely
+        to have tangled-title risk. These include properties owned by a single
+        person who is likely deceased, properties with ownership transfers more
+        than 50 years ago, properties whose last transfer document was an
+        Affidavit of Death more than one year ago, multiple-owner properties with
+        inheritance-related transfers, and multiple-owner properties where one
+        owner is deceased and ownership does not automatically transfer. In our
+        analyses, at-risk properties are identified as those likely to become
+        tangled, often due to deceased owners or multiple inheritance-based
+        ownership structures.
+        """
+    )
+
 # -----------------------------------------------------------------------------
 # Research Questions (RQ cards; not an H2 in TOC)
 # -----------------------------------------------------------------------------
@@ -1231,6 +1288,10 @@ with citywide_col:
 with tract_map_col:
     render_interactive_map(tracts, geojson)
 
+st.caption(
+    "Data years: Tangled-title and at-risk property indicators are based on 2026 BWDC/PropertyRadar-derived data."
+)
+
 st.divider()
 
 # =============================================================================
@@ -1276,6 +1337,18 @@ with right_map:
         selectbox_key="pv_metric_right",
     )
 
+st.caption("Data years: Black population and median property value indicators are based on 2024 data.")
+
+st.markdown("### Notice the pattern")
+st.markdown(
+    """
+    - Baltimore's "Black Butterfly" pattern is visible in the distribution of Black population share.
+    - The same areas of the Black Butterfly also tend to show much lower median property values.
+    - This means the burden is not only about where tangled titles occur, but also about where families have fewer property-value resources to absorb legal, repair, or inheritance shocks.
+    - The map pattern supports the interpretation that tangled-title risk is spatially tied to racialized property-value inequality.
+    """
+)
+
 st.divider()
 
 # =============================================================================
@@ -1306,8 +1379,8 @@ with holc_intro_left:
 
     st.markdown(
         """
-        The intersectionality framework used here (Uzzi et al., 2023) combines historical advantage (derived from HOLC legacy) with contemporary
-        advantage (ICE-based segregation index) to classify each census tract into one of four groups shown below.  
+        The intersectionality framework used here (Uzzi et al., 2023) combines historical redlining legacy with contemporary
+        segregation disadvantage to classify each census tract into one of four groups shown below.  
         Mathematically, tract ICE is the difference between the affluent-tail count and the poor-tail count, divided by the tract denominator—the equation below states the same relationship in symbols.  
         The Index of Concentration at the Extremes (ICE) is a measure of segregation that is calculated by the Census Bureau.
         """
@@ -1334,7 +1407,7 @@ with holc_intro_right:
 
 group_hist_left, group_hist_right = st.columns(2)
 with group_hist_left:
-    st.markdown("#### Four Intersectionality Groups")
+    st.markdown("#### Four historical/current disadvantage groups")
     render_quadrant_diagram()
 with group_hist_right:
     st.markdown("#### Tract distribution across Baltimore")
@@ -1343,12 +1416,16 @@ with group_hist_right:
 st.divider()
 
 # =============================================================================
-# H2: Impact of Historical Disadvantage and Contemporary Disadvantage
+# H2: Historical redlining disadvantage and contemporary segregation disadvantage
 # =============================================================================
 
 _quant_section_h2(
     "impact-of-historical-contemporary-disadvantage",
-    "Impact of Historical Disadvantage and Contemporary Disadvantage",
+    "Measuring the impact of historical redlining disadvantage and contemporary segregation disadvantage",
+)
+st.caption(
+    '"Historically disadvantaged" refers to redlining/HOLC legacy. '
+    '"Currently disadvantaged" refers to contemporary segregation measured using ICE.'
 )
 
 # -----------------------------------------------------------------------------
@@ -1366,7 +1443,7 @@ with _impact_scatter_box_titles_l:
         "the note below the scatter explains axes, color, bubble size, and the legend."
     )
 with _impact_scatter_box_titles_r:
-    st.markdown("### Metric distributions by intersectionality group")
+    st.markdown("### Metric distributions by historical/current disadvantage group")
     if _impact_boxplot_metric_labels:
         _impact_selected_box_metric = st.selectbox(
             "Choose metric for the boxplot",
@@ -1388,11 +1465,11 @@ with _impact_scatter_box_charts_r:
 _INTERSECTIONAL_GROUP_SUMMARY_TABLE = pd.DataFrame(
     {
         "Intersectional group": [
-            "Sustained advantage (n=32)",
-            "Contemporary advantage (n=43)",
-            "Previous advantage (n=21)",
-            "Sustained disadvantage (n=54)",
-            "Excluded from analysis (n=49)",
+            "Historically advantaged + currently advantaged (n=32)",
+            "Historically disadvantaged + currently advantaged (n=43)",
+            "Historically advantaged + currently disadvantaged (n=21)",
+            "Historically disadvantaged + currently disadvantaged (n=54)",
+            "Excluded / insufficient data (n=49)",
         ],
         "Mean black %": [53.65, 24.53, 89.34, 83.76, 56.70],
         "Median black %": [56.25, 16.50, 89.20, 88.10, 69.80],
