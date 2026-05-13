@@ -831,6 +831,52 @@ TASHA_JOURNEY_OVERVIEW_IMAGE = {
     "caption": "Composite overview image for Tasha Johnson's tangled-title journey.",
 }
 
+TASHA_PROFILE = {
+    "name": "Tasha Johnson",
+    "age": "35 years old",
+    "race_ethnicity": "Black/African-American",
+    "hometown": "West Baltimore, Maryland",
+    "job": "Front desk receptionist at Freedman's Health Clinic",
+    "income": "$16.61/hour, about $34,545/year",
+    "household_role": "Head of household",
+    "scenario_location": "Baltimore, Maryland",
+    "problem": "Tangled title, property tax burden, tax sale risk, and first-generation homeownership without clear transfer documentation",
+    "resources_needed": "Funding for legal costs, clear ownership title, estate planning support, a notarized will to prevent future title problems, financial counseling, and emotional support",
+}
+
+TASHA_CASE_STUDY_SOURCES = [
+    {
+        "label": "Baltimore Banner, Frederick Williams tax sale case",
+        "date": "March 24, 2024",
+        "url": "https://www.thebanner.com/community/housing/frederick-williams-tax-sale-baltimore-GCFNRESPTNFJPMOINW7Y73NP4E/",
+        "note": "Used as a real-world reference point for the administrative-delay and tax-sale mechanics in this fictional composite.",
+    },
+    {
+        "label": "Baltimore Banner archived article",
+        "date": "April 22, 2024",
+        "url": "https://archive.is/B15lj",
+        "note": "Background article used for local housing and tax-sale context.",
+    },
+    {
+        "label": "Black Wealth Data Center, Quantifying Tangled Titles",
+        "date": "October 2025",
+        "url": "https://blackwealthdata.org/about-us/news/post/Quantifying-Tangled-Titles-A-Hidden-Barrier-to-Wealth-Transfer",
+        "note": "Used for Baltimore-scale framing on tangled titles, tax sale, neighborhood burden, and locked household wealth.",
+    },
+    {
+        "label": "ZipRecruiter, Front Desk Receptionist Salary in Baltimore, Maryland",
+        "date": "May 8, 2026",
+        "url": "https://www.ziprecruiter.com/Salaries/Front-Desk-Receptionist-Salary-in-Baltimore,MD",
+        "note": "Used to ground the fictional profile's receptionist wage and annual income.",
+    },
+    {
+        "label": "Forebears, Most Common Last Names in Maryland",
+        "date": "accessed for name plausibility",
+        "url": "https://forebears.io/united-states/maryland/surnames",
+        "note": "Used only as background for choosing a common Maryland surname for a fictional composite resident.",
+    },
+]
+
 RESIDENT_JOURNEY_STAGES = [
     {
         "id": "family_legacy",
@@ -838,10 +884,12 @@ RESIDENT_JOURNEY_STAGES = [
         "image": f"{TASHA_JOURNEY_ASSET_DIR}/tasha_01_family_legacy.png",
         "alt": "Tasha Johnson standing in or near her long-time family home, showing family legacy and hidden title uncertainty.",
         "story_hook": "At home, Tasha is the person who keeps the house going.",
-        "narrative": "Tasha lives in a long-time family home in West Baltimore. The house is part of her family's history and functions as shelter, stability, and potential intergenerational wealth. In daily life, she behaves like the homeowner, but the legal ownership record has not caught up with the family reality.",
+        "narrative": "Tasha is a 35-year-old head of household in West Baltimore who earns $16.61 an hour as a full-time receptionist. The house she calls home is more than shelter; it is a 66-year family legacy and her family's largest financial asset. In daily life, she and other heirs behave like the real owners, but the legal ownership record has not caught up with the family reality.",
         "touchpoint": "Household, family inheritance, deed records",
         "power_map_connection": "Individual level, interpersonal level, estate planning, formal ownership vs lived ownership",
-        "barrier": "The problem is mostly invisible because the deed still reflects prior generations.",
+        "barrier": "The problem is mostly invisible because Tasha's grandparents did not have a notarized will or clear transfer documents, so deceased owners remain on the deed.",
+        "evidence_note": "Profile details draw from the provided avatar background and salary source. The lack of estate planning reflects the case-study framing around first-generation homeowners, limited knowledge of home transfers, and high legal costs.",
+        "source_labels": ["ZipRecruiter", "Forebears", "BWDC"],
     },
     {
         "id": "repair_application_blocked",
@@ -849,10 +897,12 @@ RESIDENT_JOURNEY_STAGES = [
         "image": f"{TASHA_JOURNEY_ASSET_DIR}/tasha_02_repair_application_blocked.png",
         "alt": "Tasha confronting a home repair problem while her repair assistance application is blocked by unclear title.",
         "story_hook": "The problem does not begin with a lawyer. It begins with a leak.",
-        "narrative": "When a roof leak, plumbing problem, or other repair need becomes urgent, Tasha applies for repair assistance. The application process reveals that her name is not on the deed. Although she lives in and maintains the home, the system does not recognize her as the legal owner.",
+        "narrative": "Because Tasha is not legally recognized as the owner, she is invisible to systems designed to support low-income homeowners. Homeowners' tax credits, homestead protections, repair grants, and low-interest repair loans can all become harder to access. Without these protections, taxes can rise sharply over a short period. As the roof or plumbing deteriorates, the repair application reveals what daily life had hidden: she cannot prove that she owns the house.",
         "touchpoint": "Home repair program, housing service provider, deed verification",
         "power_map_connection": "Housing service organizations, service eligibility barrier, owner-occupied protection gap",
-        "barrier": "Repair grants or low-interest repair loans may require clear title.",
+        "barrier": "Repair grants, tax credits, and owner-occupied protections may require clear title or proof that the applicant is legally recognized as the homeowner.",
+        "evidence_note": "This stage uses the case-study discussion of Homeowners' Tax Credit, Homestead Tax Credit, repair grants, low-interest loans, and the way tangled status can punish low-income residents for a documentation mismatch.",
+        "source_labels": ["BWDC", "Baltimore Banner"],
     },
     {
         "id": "tax_payment_admin_delay",
@@ -860,10 +910,12 @@ RESIDENT_JOURNEY_STAGES = [
         "image": f"{TASHA_JOURNEY_ASSET_DIR}/tasha_03_tax_payment_admin_delay.png",
         "alt": "Tasha dealing with property tax paperwork and administrative delays while trying to protect her home.",
         "story_hook": "Trying to fix the problem creates a second problem: paperwork, notices, and systems that do not recognize her.",
-        "narrative": "Tasha tries to resolve outstanding property taxes and protect the home, but the process becomes bureaucratically difficult. Payments, notices, and legal documents may be tied to the deceased owner's name rather than hers. Even when she tries to act responsibly, administrative delays and title mismatch increase her risk.",
+        "narrative": "Family disagreement over how to manage the property stalls probate while taxes continue to pressure the household. Tasha scrapes together $13,000 to address outstanding property taxes, but payments, notices, and legal documents remain tied to deceased owners or titled owners rather than to her. Similar to the Frederick Williams tax-sale reporting, even a delay in processing payment can become catastrophic when the title record does not recognize the person trying to save the home.",
         "touchpoint": "Property tax system, municipal charges, payment processing, legal notices",
         "power_map_connection": "Tax sale system, legal paperwork addressed to titled owner, administrative burden",
-        "barrier": "Because Tasha is not legally recognized as the owner, she may not receive the same notices, protections, or support pathways as a clear-title homeowner.",
+        "barrier": "Because Tasha is not legally recognized as the owner, tax-sale and foreclosure paperwork may not reach her in time or may not treat her as the person with standing to resolve the problem.",
+        "evidence_note": "This stage adapts the administrative-delay logic from reporting on Frederick Williams' Baltimore tax-sale case, including the case-study detail that a check was not cashed for nearly a month, while keeping Tasha fictional.",
+        "source_labels": ["Baltimore Banner", "BWDC"],
     },
     {
         "id": "foreclosure_threat",
@@ -871,12 +923,31 @@ RESIDENT_JOURNEY_STAGES = [
         "image": f"{TASHA_JOURNEY_ASSET_DIR}/tasha_04_foreclosure_threat.png",
         "alt": "Tasha standing outside her family home as a foreclosure or tax sale threat becomes real.",
         "story_hook": "By the time the crisis is visible, the home is no longer just a legal issue. It is shelter.",
-        "narrative": "The crisis becomes visible when the property is threatened by tax sale or foreclosure. Tasha may only realize the severity of the situation when an investor, inspector, or auction-related actor appears. The home is not just an asset. It is shelter, family memory, and a pathway to intergenerational stability.",
+        "narrative": "The crisis becomes visible when the property is mistakenly sold through tax sale or moves toward foreclosure. Because Tasha's name is not on the deed, she may not receive legal notice in the same way a clear-title owner would. She may only realize the gravity of the situation when a stranger arrives to inspect the house for auction. The home is shelter, family memory, and a pathway to intergenerational stability.",
         "touchpoint": "Tax sale, foreclosure process, market actors, investor or speculator interest",
         "power_map_connection": "Tax sale vulnerability, market actors, housing loss, racialized wealth loss",
-        "barrier": "Tangled title turns a paperwork problem into a housing stability crisis.",
+        "barrier": "Tangled title turns a paperwork problem into a housing stability crisis and can expose family wealth to tax lien buyers, investors, vacancy, or displacement.",
+        "evidence_note": "This stage connects the fictional journey to Baltimore tax-sale reporting and BWDC's framing of tangled titles as a hidden barrier to wealth transfer.",
+        "source_labels": ["Baltimore Banner", "BWDC"],
     },
 ]
+
+TASHA_CASE_STUDY_IMPLICATIONS = [
+    "Legal-cost support and title clearing are central needs because Tasha cannot resolve ownership without navigating probate, deed records, and family claims.",
+    "Estate planning support, including notarized wills or other transfer tools, can help prevent the same title problem from recurring in the next generation.",
+    "Financial and emotional counseling matter because the crisis is not only legal; it affects taxes, repairs, family conflict, stress, and household stability.",
+    "Community workshops can bridge the information gap before a home reaches the tax sale list.",
+    "BWDC-style data can help identify high-risk census tracts for proactive outreach, while avoiding punitive targeting of residents.",
+    "Maryland policy reform could reduce the risk that families lose inherited homes because tax bills, title transfer, and probate systems do not line up.",
+    "One reform direction raised by the case study is allowing property to pass to heirs even when tax bills are behind, so tax debt does not automatically block family wealth transfer.",
+    "Untangling titles can return substantial equity to residents, potentially unlocking billions in neighborhood wealth over time and helping secure the wealth that families built over decades.",
+]
+
+TASHA_BALTIMORE_SCALE_CONTEXT = {
+    "tax_sale": "The case study frames Tasha's neighborhood as part of a broader Baltimore pattern where 41,000 properties, mostly in Black neighborhoods, have cycled through the tax sale system since 2016.",
+    "locked_assets": "BWDC and Local Wealth Explorer framing connect tangled titles to more than $300 million in locked assets across Baltimore, wealth that could otherwise support generational transfer, home repair, or small-business formation.",
+    "vacancy_cost": "When inherited homes are lost or left unresolved, they can become vacant, contributing to lost city revenue, direct public costs, and neighborhood instability.",
+}
 
 SOLUTION_CATEGORIES = [
     ("Upstream prevention", ["plain-language estate planning", "transfer-on-death deeds", "wills and life estate deeds", "estate planning while the homeowner is alive"]),

@@ -11,7 +11,14 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from shared_style import apply_theme, render_page_toc, section_h2
-from tangled_titles_content import RESIDENT_JOURNEY_STAGES, TASHA_JOURNEY_OVERVIEW_IMAGE
+from tangled_titles_content import (
+    RESIDENT_JOURNEY_STAGES,
+    TASHA_BALTIMORE_SCALE_CONTEXT,
+    TASHA_CASE_STUDY_IMPLICATIONS,
+    TASHA_CASE_STUDY_SOURCES,
+    TASHA_JOURNEY_OVERVIEW_IMAGE,
+    TASHA_PROFILE,
+)
 
 
 st.set_page_config(page_title="Resident Journey", layout="wide")
@@ -21,6 +28,7 @@ JOURNEY_TOC = (
     ("overview", "Overview"),
     ("tasha-journey", "Tasha's Journey"),
     ("system-encounters", "System Encounters"),
+    ("sources-and-implications", "Sources and Implications"),
 )
 render_page_toc("resident-journey", JOURNEY_TOC)
 
@@ -93,6 +101,11 @@ def render_stage(stage: dict[str, str], idx: int) -> None:
                 """,
                 unsafe_allow_html=True,
             )
+        with st.expander("Evidence and source notes", expanded=False):
+            st.markdown(stage.get("evidence_note", ""))
+            source_labels = stage.get("source_labels", [])
+            if source_labels:
+                st.caption("Source anchors: " + ", ".join(source_labels))
 
 
 def render_journey_overview_image() -> None:
@@ -138,22 +151,37 @@ section_h2("overview", "Overview")
 overview_left, overview_right = st.columns([0.52, 0.48], gap="large")
 with overview_left:
     st.markdown(
-        """
+        f"""
         <div class="central-issue-card">
             <h3>The Hostage Home: Tasha Johnson's Journey</h3>
-            <p>Tasha Johnson is a 35-year-old Black/African-American head of
-            household in West Baltimore. She works full-time as a front desk
-            receptionist at Freedman's Health Clinic and lives in a long-time
-            family home that represents shelter, memory, and a 66-year family
-            legacy.</p>
-            <p>The home becomes "held hostage" by a tangled title: her
-            grandparents did not leave clear estate documents, the deed remains
-            outdated, and the systems that should protect low-income homeowners
-            do not recognize Tasha as the legal owner.</p>
+            <p><strong>{escape(TASHA_PROFILE["name"])}</strong> is a {escape(TASHA_PROFILE["age"])}
+            {escape(TASHA_PROFILE["race_ethnicity"])} head of household from
+            {escape(TASHA_PROFILE["hometown"])}. She works full time as a
+            {escape(TASHA_PROFILE["job"])} and earns {escape(TASHA_PROFILE["income"])}.</p>
+            <p>The home becomes "held hostage" by a tangled title: the deed remains
+            outdated, the tax system does not see Tasha as the legal owner, and
+            support systems that could protect low-income homeowners become harder
+            to access.</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    profile_cols = st.columns(2)
+    profile_items = [
+        ("Problem", TASHA_PROFILE["problem"]),
+        ("Resources needed", TASHA_PROFILE["resources_needed"]),
+    ]
+    for col, (label, value) in zip(profile_cols, profile_items):
+        with col:
+            st.markdown(
+                f"""
+                <div class="compact-card">
+                    <h3>{escape(label)}</h3>
+                    <p>{escape(value)}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 with overview_right:
     render_journey_overview_image()
 
@@ -194,3 +222,52 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.markdown("### Baltimore-scale context")
+context_cols = st.columns(3)
+for col, (label, value) in zip(
+    context_cols,
+    [
+        ("Tax sale exposure", TASHA_BALTIMORE_SCALE_CONTEXT["tax_sale"]),
+        ("Locked family assets", TASHA_BALTIMORE_SCALE_CONTEXT["locked_assets"]),
+        ("Vacancy and public cost", TASHA_BALTIMORE_SCALE_CONTEXT["vacancy_cost"]),
+    ],
+):
+    with col:
+        st.markdown(
+            f"""
+            <div class="compact-card">
+                <h3>{escape(label)}</h3>
+                <p>{escape(value)}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+section_h2("sources-and-implications", "Sources and Implications")
+st.markdown(
+    """
+    This section keeps the case study transparent: Tasha is fictional, but the
+    profile, tax-sale pathway, wage assumption, surname choice, and Baltimore-wide
+    wealth framing are grounded in the sources below.
+    """
+)
+
+source_cols = st.columns(2)
+for idx, source in enumerate(TASHA_CASE_STUDY_SOURCES):
+    with source_cols[idx % 2]:
+        st.markdown(
+            f"""
+            <div class="evidence-card">
+                <h3>{escape(source["label"])}</h3>
+                <p class="muted-note">{escape(source["date"])}</p>
+                <p>{escape(source["note"])}</p>
+                <p><a href="{escape(source["url"])}" target="_blank" rel="noopener">Open source</a></p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+with st.expander("Community implications from the composite case", expanded=False):
+    for item in TASHA_CASE_STUDY_IMPLICATIONS:
+        st.markdown(f"- {item}")
