@@ -222,7 +222,6 @@ with col1:
             <div class="compact-card"><h3>Quant map</h3><p>Tract-level patterns in title risk and wealth context.</p></div>
             <div class="compact-card"><h3>Interviews</h3><p>Stakeholder themes about crisis, navigation, and institutional trust.</p></div>
             <div class="compact-card"><h3>Power map</h3><p>Actors, barriers, facilitators, and intervention points.</p></div>
-            <div class="compact-card"><h3>Policy and context</h3><p>Rules and administrative systems shaping access.</p></div>
         </div>
         """
         ,
