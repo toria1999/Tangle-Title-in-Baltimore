@@ -529,13 +529,13 @@ st.info(
     "The system contains more documented barriers than facilitators, which suggests that intervention requires coordinated changes across legal, housing, tax, and community systems."
 )
 
-with st.expander("How this page aligns with the qualitative slides", expanded=False):
+with st.expander("Evidence patterns represented in the Power Map", expanded=False):
     st.markdown(
         """
-        - **Ecosystem overview:** the hierarchy separates individual, interpersonal, community, policy, economic, and societal factors.
-        - **Barriers to resolution:** node cards and the barrier/facilitator summary cover legal cost, probate, document burden, repair eligibility, family conflict, and tax-sale risk.
+        - **Multilevel impact:** the hierarchy separates individual, interpersonal, community, policy, economic, and societal factors.
+        - **Barriers to resolution:** node cards cover legal cost, probate, document burden, repair eligibility, family conflict, tax-sale risk, and data gaps.
         - **Facilitators to resolution:** legal aid, MVLS, community clinics, neighborhood outreach, mediation, warm handoffs, and preventive deed tools are retained as facilitator nodes.
-        - **Intervention points:** the final section organizes individual, household, community, and structural leverage points without duplicating the interview evidence.
+        - **Prevention logic:** the final section organizes estate planning, frontline case finding, repair-program screening, mediation, and tax-sale prevention without duplicating the full interview evidence.
         """
     )
 
@@ -563,7 +563,7 @@ with st.expander("Explore intervention leverage points", expanded=False):
             ):
                 switch_to_interview(theme_id)
 
-with st.expander("Implementation resources referenced in the qualitative slides", expanded=False):
+with st.expander("Local implementation resources", expanded=False):
     st.markdown(
         "These links supplement the intervention logic with concrete local planning, legal aid, financial counseling, and tax-sale prevention touchpoints."
     )

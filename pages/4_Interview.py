@@ -27,6 +27,7 @@ INTERVIEW_TOC = (
     ("overview", "Overview"),
     ("interviewee-perspectives", "Interviewee Perspectives"),
     ("three-messages", "Three Messages"),
+    ("evidence-highlights", "Evidence Highlights"),
     ("interview-word-cloud", "Repeated Interview Language"),
     ("theme-explorer", "Theme Explorer"),
 )
@@ -37,6 +38,52 @@ def switch_to_power_map(node_id: str) -> None:
     st.session_state["selected_section"] = "Power Map"
     st.session_state["selected_node"] = node_id
     st.switch_page("pages/5_Power_Map.py")
+
+
+QUOTE_SOURCE_BY_TEXT = {
+    "Most people are seeing a symptom usually.": "Legal Assistance Organization Leader 1",
+    "They assume because they were the adult child living in the property that they automatically inherited it, which is not true.": "Legal Assistance Organization Leader 1",
+    "Instead of waiting for people to come to you, go to them.": "Legal Assistance Organization Leader 2",
+    "One of the conditions of receiving home repair funding in the city, in particular, is that you have to have a clear title.": "Local Policymaker 1",
+    "They know that their mom is on the deed. But they assume that they are the owner and it's fine.": "Legal Assistance Organization Leader 1",
+    "If people had their wills and they had life estate deeds, this would not be an issue.": "Legal Assistance Organization Leader 1",
+    "If they can't come to consensus, then in many ways the property may sit in limbo.": "Local Policymaker 1",
+    "People don't even know they need to go to the Register of Wills.": "Legal Assistance Organization Leader 1",
+    "Transportation is a big issue.": "Legal Assistance Organization Leader 1",
+    "One of the most important things that people are actually getting from these homes is shelter.": "Local Policymaker 1",
+    "Most of the times it is the Black Butterfly region.": "Legal Assistance Organization Leader 3",
+    "People don't know what they don't know.": "Legal Assistance Organization Leader 1",
+    "People don't even know where to start.": "Legal Assistance Organization Leader 1",
+    "Dead-on-arrival situations": "Legal Assistance Organization Leader 1",
+    "Our population (clients) is about 90% Black and mostly seniors.": "Legal Assistance Organization Leader 3",
+    "The communities that they serve are mostly the Black Butterfly region. Most of the times it is the Black Butterfly region.": "Legal Assistance Organization Leader 3",
+    "Grown people's business was grown people's business.": "Legal Assistance Organization Leader 1",
+    "Because there is no enforcement in the city, there is no good data on how many properties are going unregulated or how many rentals are essentially illegal because they are not going through the proper process.": "Local Policymaker 1",
+    "So rather than finding it out in court, which is too expensive; they just let it go. And so that is, I think, I would say that's probably the biggest.": "Legal Assistance Organization Leader 1",
+    "Other barriers are connected to human psychology and, partly, American culture. We do not interface with death or deal with death very well. Death is not at the forefront of our minds, so people may think estate planning is just something they will do when it happens, rather than something they should plan for.": "Local Policymaker 1",
+    "The easiest to dissolve is the soonest they come, right? In the event that the homeowner is the person on the deed and they are the ones that pass away, as soon as they're done grieving with that process and ready to tackle and take on this new endeavor, the better. There's another reason to do it sooner: before someone else dies and there's more people with an interest in the home who could make it more complicated to sort through.": "Legal Assistance Organization Leader 1",
+    "In Baltimore, given health risk factors, the people who should be prioritized are people who may be closer to death than others. That is a real reality when you are dealing with older homeowners. You cannot take for granted that they will still be there to resolve deed issues in one or two years. In terms of priority, the first cut is likely elderly people.": "Local Policymaker 1",
+    "We did a heat map of those 3000 properties affected by tangled titles. And it was pretty close to like what people would call a 'black butterfly'.": "Legal Assistance Organization Leader 2",
+    "Come to consensus on what happens to that property.": "Local Policymaker 1",
+    "Now we have legislation that's implemented to where someone doesn't necessarily have access to a lawyer or legal counsel, and they want to transfer the property to their family. Now it's just a document that you can go and you can fill out.": "Legal Assistance Organization Leader 1",
+    "If we educate the younger generation, and we get it out there, maybe they can have these conversations with their parents.": "Local Policymaker 1",
+    "These people are in their home, like, installing grab bars in the shower. But they can be trained by us to spot some issues and send them our way.": "Legal Assistance Organization Leader 1",
+    "For people accessing grants to repair their homes, is there a way that, in exchange for receiving repair grant money, we can require or strongly encourage them to do estate planning? Can we ask them to go through the process of clearing the title and doing this work while they are still alive?": "Legal Assistance Organization Leader 2",
+    "Can the city partner with someone who offers mediation services, so family members can arrive at a resolution about what to do with the property? It is hard for me to see siblings or any other group of people who own a house together resolving that issue on their own.": "Legal Assistance Organization Leader 2",
+}
+
+
+def quote_source_for(quote: str) -> str:
+    normalized = quote.strip().strip('"').replace("’", "'").replace("“", "").replace("”", "")
+    return QUOTE_SOURCE_BY_TEXT.get(normalized, "Interview participant")
+
+
+def quote_block(quote: str, source=None) -> str:
+    speaker = source or quote_source_for(quote)
+    return (
+        f'<div class="mini-quote">"{escape(quote)}"'
+        f'<br><small>{escape(speaker)}</small></div>'
+    )
 
 
 def render_theme_card(theme: dict, compact: bool = False) -> None:
@@ -56,7 +103,7 @@ def render_theme_card(theme: dict, compact: bool = False) -> None:
 
     quote_count = 1 if compact else min(3, len(theme["key_quotes"]))
     for quote in theme["key_quotes"][:quote_count]:
-        st.markdown(f'<div class="mini-quote">"{quote}"</div>', unsafe_allow_html=True)
+        st.markdown(quote_block(quote), unsafe_allow_html=True)
 
     with st.expander("Related Power Map nodes", expanded=False):
         for node in related_nodes:
@@ -280,29 +327,28 @@ section_h2("interviewee-perspectives", "Interviewee Perspectives")
 st.markdown(
     """
     <p class="section-subtitle">
-    The interview evidence reflects institutional and practice-based perspectives
-    from people working across civic design, city innovation, legal aid, and
-    homeownership preservation.
+    Speaker labels are de-identified role labels from the qualitative materials.
+    They name the perspective behind a quote, not a personal identity.
     </p>
     """,
     unsafe_allow_html=True,
 )
 perspective_cards = [
     (
-        "Civic design / city innovation",
-        "Baltimore Mayor's Office of Innovation civic design perspective, including work connected to homeownership preservation.",
+        "Legal Assistance Organization Leader 1",
+        "Homeownership-preservation and legal-aid perspective on estate planning, probate, legal costs, education, transfer tools, and frontline case finding.",
     ),
     (
-        "Legal aid / homeownership preservation",
-        "Practitioners who see tangled titles through repair eligibility, probate, foreclosure, and title-clearing cases.",
+        "Legal Assistance Organization Leader 2",
+        "Legal and housing-systems perspective on repair-grant-linked estate planning, mediation, community partnerships, and data-informed outreach.",
     ),
     (
-        "Baltimore City innovation team",
-        "City-facing perspective on service pathways, resident touchpoints, and how administrative systems become visible in crisis.",
+        "Legal Assistance Organization Leader 3",
+        "Community-facing service perspective on client demographics, Black Butterfly geography, warm referrals, and tracking gaps after referral.",
     ),
     (
-        "Maryland Volunteer Legal Services",
-        "Legal service perspective on estate planning, probate assistance, tax sale prevention, and warm referrals.",
+        "Local Policymaker 1",
+        "Policy and city-systems perspective on enforcement, data gaps, intergenerational education, elderly homeowner prioritization, and mediation.",
     ),
 ]
 perspective_cols = st.columns(4)
@@ -318,16 +364,6 @@ for col, (title, description) in zip(perspective_cols, perspective_cards):
             """,
             unsafe_allow_html=True,
         )
-
-with st.expander("How this page aligns with the qualitative slides", expanded=False):
-    st.markdown(
-        """
-        - **Methods / positionality / codebook:** this page presents a curated synthesis of stakeholder interviews rather than full transcripts.
-        - **Multilevel impact:** the themes connect resident experience to family, service, legal, economic, and structural systems.
-        - **Social patterns and demographic concentration:** interview themes include Black Butterfly geography, fixed-income seniors, and racialized housing inequality.
-        - **Barriers, facilitators, and recommendations:** detailed system barriers and intervention points are carried forward into the Power Map page.
-        """
-    )
 
 section_h2("three-messages", "Three messages from the interviews")
 message_cards = [
@@ -350,17 +386,98 @@ message_cards = [
 cols = st.columns(3)
 for col, (title, explanation, quote) in zip(cols, message_cards):
     with col:
+        quote_html = quote_block(quote)
         st.markdown(
             f"""
             <div class="evidence-card" style="min-height:285px;">
                 <span class="rq-badge">Interview message</span>
                 <h3>{title}</h3>
                 <p>{explanation}</p>
-                <div class="mini-quote">"{quote}"</div>
+                {quote_html}
             </div>
             """,
             unsafe_allow_html=True,
         )
+
+section_h2("evidence-highlights", "Interview Evidence Highlights")
+st.markdown(
+    """
+    <p class="section-subtitle">
+    These highlights translate the strongest recurring interview patterns into a compact reader guide.
+    The theme explorer below keeps the fuller evidence set available.
+    </p>
+    """,
+    unsafe_allow_html=True,
+)
+highlight_cards = [
+    (
+        "Multilevel impacts",
+        [
+            "Financial impacts and loss of wealth-building opportunities",
+            "Chronic stress and psychological burden",
+            "Unsafe living conditions and housing instability",
+            "Family dynamics and interpersonal conflict",
+        ],
+        [],
+    ),
+    (
+        "Social patterns and demographic concentration",
+        [
+            "Interviewees described concentration among Black, older, and long-term homeowners.",
+            "Several participants connected title risk to Baltimore's Black Butterfly geography.",
+            "Some barriers are also cultural and intergenerational: families may avoid death, inheritance, and estate-planning conversations.",
+        ],
+        [
+            "Our population (clients) is about 90% Black and mostly seniors.",
+            "The communities that they serve are mostly the Black Butterfly region. Most of the times it is the Black Butterfly region.",
+            "Grown people's business was grown people's business.",
+        ],
+    ),
+    (
+        "Barriers and systemic gaps",
+        [
+            "Residents often do not know where to start.",
+            "Repair or aid applications can become dead-on-arrival when formal ownership is unresolved.",
+            "Referral systems may connect residents to legal providers without tracking whether the barrier is actually resolved.",
+            "City data and enforcement gaps can obscure how many properties are affected by informal or unresolved ownership.",
+        ],
+        [
+            "People don't know what they don't know.",
+            "So rather than finding it out in court, which is too expensive; they just let it go. And so that is, I think, I would say that's probably the biggest.",
+            "Other barriers are connected to human psychology and, partly, American culture. We do not interface with death or deal with death very well. Death is not at the forefront of our minds, so people may think estate planning is just something they will do when it happens, rather than something they should plan for.",
+        ],
+    ),
+    (
+        "Facilitators and prevention",
+        [
+            "Early legal aid and title clearing are easier before more heirs and documents accumulate.",
+            "Community partnerships can prioritize older homeowners and high-risk neighborhoods.",
+            "Prevention includes transfer tools, intergenerational education, frontline worker training, repair-program screening, and mediation.",
+        ],
+        [
+            "Now we have legislation that's implemented to where someone doesn't necessarily have access to a lawyer or legal counsel, and they want to transfer the property to their family. Now it's just a document that you can go and you can fill out.",
+            "For people accessing grants to repair their homes, is there a way that, in exchange for receiving repair grant money, we can require or strongly encourage them to do estate planning? Can we ask them to go through the process of clearing the title and doing this work while they are still alive?",
+            "Can the city partner with someone who offers mediation services, so family members can arrive at a resolution about what to do with the property? It is hard for me to see siblings or any other group of people who own a house together resolving that issue on their own.",
+        ],
+    ),
+]
+highlight_columns = st.columns(2)
+for idx, (title, bullets, quotes) in enumerate(highlight_cards):
+    with highlight_columns[idx % 2]:
+        bullet_html = "".join(f"<li>{escape(item)}</li>" for item in bullets)
+        quote_html = "".join(quote_block(quote) for quote in quotes[:2])
+        with st.container(border=True):
+            st.markdown(
+                f"""
+                <div class="evidence-card compact-card">
+                    <span class="rq-badge">Evidence pattern</span>
+                    <h3>{escape(title)}</h3>
+                    <ul>{bullet_html}</ul>
+                    {quote_html}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
 section_h2("interview-word-cloud", "What Came Up Repeatedly in Interviews")
 st.markdown(
@@ -373,31 +490,6 @@ st.markdown(
 
 with st.expander("Explore recurring words from interviews", expanded=False):
     render_interactive_word_cloud_panel(WORD_CLOUD_TERMS)
-    term_options = {term["text"]: term for term in WORD_CLOUD_TERMS}
-    selected_word = st.selectbox(
-        "Explore a term",
-        ["Choose a term"] + [term["text"] for term in WORD_CLOUD_TERMS],
-        key="word-cloud-term-select",
-    )
-    if selected_word != "Choose a term":
-        term = term_options[selected_word]
-        quote_html = (
-            f'<div class="mini-quote" style="margin-top:0.65rem;">"{escape(term["quote"])}"</div>'
-            if term.get("quote")
-            else ""
-        )
-        st.markdown(
-            f"""
-            <div class="detail-panel">
-                <span class="rq-badge">Selected term</span>
-                <h3>{escape(term["text"])}</h3>
-                <p><strong>Theme:</strong> {escape(term["theme"])}</p>
-                <p>{escape(term["description"])}</p>
-                {quote_html}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
     st.caption(
         "Terms were cleaned and grouped to emphasize analytically meaningful interview language rather than raw transcript frequency."
     )
@@ -415,16 +507,17 @@ with st.expander("Selected quotes behind the recurring words", expanded=False):
         for idx, (theme_label, quote, theme_id, node_id) in enumerate(group_items):
             node = NODE_BY_ID.get(node_id)
             theme = THEME_BY_ID.get(theme_id)
+            speaker = quote_source_for(quote)
             with columns[idx % 2]:
                 st.markdown(
                     f"""
                     <div class="evidence-card" style="min-height:285px;">
-                        <div class="mini-quote" style="line-height:1.48;">"{quote}"</div>
+                        <div class="mini-quote" style="line-height:1.48;">"{escape(quote)}"<br><small>{escape(speaker)}</small></div>
                         <div class="badge-row">
-                            <span class="node-chip">{theme_label}</span>
+                            <span class="node-chip">{escape(theme_label)}</span>
                         </div>
-                        <p class="muted-note">Theme: {theme["title"] if theme else theme_id}</p>
-                        <p class="muted-note">Power map node: {node["label"] if node else node_id}</p>
+                        <p class="muted-note">Theme: {escape(theme["title"] if theme else theme_id)}</p>
+                        <p class="muted-note">Power map node: {escape(node["label"] if node else node_id)}</p>
                     </div>
                     """,
                     unsafe_allow_html=True,
