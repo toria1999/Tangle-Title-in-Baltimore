@@ -574,27 +574,42 @@ with st.expander("Explore intervention leverage points", expanded=False):
     leverage_cols = st.columns(2)
     for idx, (leverage_point, theme_ids) in enumerate(INTERVENTION_LEVERAGE_POINTS):
         with leverage_cols[idx % 2]:
+            themes = [THEME_BY_ID.get(theme_id) for theme_id in theme_ids]
+            themes = [theme for theme in themes if theme]
+            summary = themes[0]["implications"] if themes else "Connect this leverage point to related interview evidence."
+            theme_rows = "".join(
+                f"""
+                <div class="action-theme-row">
+                    <strong>{escape(theme["title"])}</strong>
+                    <span>{escape(theme["implications"])}</span>
+                </div>
+                """
+                for theme in themes
+            )
             st.markdown(
                 f"""
                 <div class="action-tile">
-                    <span class="tag-pill">Leverage point</span>
+                    <div class="action-kicker">
+                        <span class="tag-pill">Leverage point</span>
+                        <span class="action-number">{idx + 1}</span>
+                    </div>
                     <h3>{escape(leverage_point)}</h3>
+                    <p class="action-summary">{escape(summary)}</p>
+                    <div class="action-theme-list">
+                        {theme_rows}
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            for theme_id in theme_ids[:3]:
-                theme = THEME_BY_ID.get(theme_id)
-                if not theme:
-                    continue
-                st.markdown(f"**{theme['title']}**")
-                st.caption(theme["implications"])
+            st.markdown('<p class="action-button-note">Open related interview evidence</p>', unsafe_allow_html=True)
+            for button_idx, theme in enumerate(themes):
                 if st.button(
-                    f"View interview evidence: {theme['title']}",
-                    key=f"leverage-{leverage_point}-{theme_id}",
+                    f"{button_idx + 1}. {theme['title']}",
+                    key=f"leverage-{leverage_point}-{theme['id']}",
                     use_container_width=True,
                 ):
-                    switch_to_interview(theme_id)
+                    switch_to_interview(theme["id"])
 
 with st.expander("Local implementation resources", expanded=False):
     st.markdown(

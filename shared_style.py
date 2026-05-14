@@ -280,8 +280,75 @@ def apply_theme() -> None:
         }
 
         .action-tile {
-            padding: 0.95rem;
+            padding: 1rem;
             min-height: 145px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 220, 0.56));
+            border-left: 6px solid var(--bwdc-gold-deep);
+            margin: 0.35rem 0 0.75rem;
+        }
+
+        .action-tile .action-kicker {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-tile .action-number {
+            width: 2.15rem;
+            height: 2.15rem;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bwdc-teal);
+            color: var(--bwdc-cream-soft);
+            font-weight: 850;
+            box-shadow: inset 0 0 0 2px rgba(255, 250, 240, 0.22);
+            flex: 0 0 auto;
+        }
+
+        .action-tile .action-summary {
+            color: var(--bwdc-muted);
+            font-size: 0.95rem;
+            line-height: 1.45;
+            margin: 0.2rem 0 0.75rem;
+        }
+
+        .action-theme-list {
+            display: grid;
+            gap: 0.48rem;
+            margin-top: 0.65rem;
+        }
+
+        .action-theme-row {
+            border: 1px solid rgba(41, 73, 67, 0.12);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.68);
+            padding: 0.62rem 0.68rem;
+        }
+
+        .action-theme-row strong {
+            display: block;
+            font-size: 0.92rem;
+            line-height: 1.28;
+            color: var(--bwdc-teal-deep);
+            margin-bottom: 0.18rem;
+        }
+
+        .action-theme-row span {
+            display: block;
+            color: var(--bwdc-muted);
+            font-size: 0.84rem;
+            line-height: 1.36;
+        }
+
+        .action-button-note {
+            color: var(--bwdc-muted);
+            font-size: 0.82rem;
+            margin: 0.25rem 0 0.2rem;
         }
 
         .link-card {
