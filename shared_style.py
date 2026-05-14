@@ -37,8 +37,14 @@ def apply_theme() -> None:
             max-width: 1180px;
         }
 
+        .main .block-container > div {
+            max-width: 1180px;
+        }
+
         section[data-testid="stMain"] h2 {
-            margin-top: 2.4rem;
+            margin-top: 3.2rem;
+            padding-top: 0.15rem;
+            border-top: 1px solid rgba(41, 73, 67, 0.12);
         }
 
         h1, h2, h3 {
@@ -48,6 +54,31 @@ def apply_theme() -> None:
 
         p, li {
             color: var(--bwdc-teal-deep);
+        }
+
+        p {
+            max-width: 850px;
+            line-height: 1.58;
+        }
+
+        div[data-testid="stExpander"] {
+            border: 1px solid rgba(41, 73, 67, 0.16) !important;
+            border-radius: 10px !important;
+            background: rgba(255, 255, 255, 0.48) !important;
+            box-shadow: 0 8px 20px rgba(24, 49, 45, 0.035);
+            margin: 0.8rem 0 1rem;
+        }
+
+        div[data-testid="stExpander"] summary {
+            color: var(--bwdc-teal-deep) !important;
+            font-weight: 750 !important;
+        }
+
+        div[data-testid="stSelectbox"] label,
+        div[data-testid="stMultiSelect"] label,
+        div[data-testid="stTextInput"] label {
+            color: var(--bwdc-teal-deep) !important;
+            font-weight: 700 !important;
         }
 
         section[data-testid="stSidebar"] {
@@ -103,6 +134,195 @@ def apply_theme() -> None:
             font-size: 1.05rem;
             line-height: 1.55;
             max-width: 900px;
+        }
+
+        .section-container {
+            margin: 1rem 0 2.4rem;
+            padding: 0.35rem 0 0;
+        }
+
+        .report-intro {
+            border: 1px solid rgba(41, 73, 67, 0.16);
+            border-radius: 12px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 247, 220, 0.78));
+            padding: 1.25rem 1.35rem;
+            margin: 0.6rem 0 1.5rem;
+            box-shadow: 0 14px 32px rgba(24, 49, 45, 0.055);
+        }
+
+        .report-intro p {
+            max-width: 820px;
+            margin: 0;
+            font-size: 1.04rem;
+            line-height: 1.62;
+            color: var(--bwdc-teal-deep);
+        }
+
+        .figure-container {
+            border: 1px solid rgba(41, 73, 67, 0.18);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.72);
+            padding: 1rem 1.05rem;
+            margin: 0.8rem 0 1.3rem;
+            box-shadow: 0 14px 30px rgba(24, 49, 45, 0.055);
+        }
+
+        .figure-container h3 {
+            margin: 0 0 0.25rem;
+        }
+
+        .figure-container p,
+        .figure-caption {
+            color: var(--bwdc-muted);
+            font-size: 0.94rem;
+            line-height: 1.45;
+            margin: 0.25rem 0 0.35rem;
+            max-width: 900px;
+        }
+
+        .summary-card,
+        .profile-card,
+        .metric-card,
+        .action-tile,
+        .link-card,
+        .reference-card {
+            border: 1px solid rgba(41, 73, 67, 0.15);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 10px 24px rgba(24, 49, 45, 0.045);
+            transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+        }
+
+        .summary-card:hover,
+        .profile-card:hover,
+        .action-tile:hover,
+        .link-card:hover,
+        .reference-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(41, 73, 67, 0.25);
+            box-shadow: 0 16px 30px rgba(24, 49, 45, 0.07);
+        }
+
+        .summary-card {
+            min-height: 300px;
+            padding: 1.05rem;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 247, 220, 0.58));
+        }
+
+        .summary-card h3,
+        .profile-card h3,
+        .action-tile h3,
+        .reference-card h3,
+        .link-card h3 {
+            margin: 0.45rem 0 0.45rem;
+            line-height: 1.25;
+        }
+
+        .profile-card {
+            min-height: 210px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.82);
+        }
+
+        .profile-card p,
+        .summary-card p,
+        .action-tile p,
+        .reference-card p,
+        .link-card p {
+            color: var(--bwdc-muted);
+            line-height: 1.5;
+            margin: 0.35rem 0;
+        }
+
+        .evidence-board-card {
+            min-height: 360px;
+            padding: 1rem;
+            border-top: 5px solid var(--bwdc-gold);
+        }
+
+        .quote-card {
+            border-left: 5px solid var(--bwdc-gold-deep);
+            border-radius: 10px;
+            background: rgba(255, 247, 220, 0.72);
+            padding: 0.78rem 0.9rem;
+            margin: 0.5rem 0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            color: var(--bwdc-teal-deep);
+            font-style: italic;
+        }
+
+        .quote-card small,
+        .quote-source {
+            display: block;
+            margin-top: 0.4rem;
+            color: var(--bwdc-muted);
+            font-style: normal;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .metric-card {
+            padding: 1rem 1.05rem;
+            text-align: left;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(241,247,223,0.62));
+        }
+
+        .metric-card .metric-value {
+            display: block;
+            font-size: 2.35rem;
+            line-height: 1;
+            font-weight: 850;
+            color: var(--bwdc-teal-deep);
+            margin: 0.35rem 0;
+        }
+
+        .action-tile {
+            padding: 0.95rem;
+            min-height: 145px;
+        }
+
+        .link-card {
+            padding: 0.9rem;
+            min-height: 120px;
+        }
+
+        .link-card a {
+            color: var(--bwdc-teal-deep);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .link-card a:hover {
+            text-decoration: underline;
+        }
+
+        .reference-card {
+            padding: 0.85rem;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 0.2rem 0.58rem;
+            background: rgba(215, 232, 189, 0.72);
+            border: 1px solid rgba(41, 73, 67, 0.14);
+            color: var(--bwdc-teal-deep);
+            font-size: 0.76rem;
+            font-weight: 750;
+            line-height: 1.2;
+        }
+
+        .compact-reference-card {
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid rgba(41, 73, 67, 0.12);
+            background: rgba(255, 250, 240, 0.76);
+            margin: 0.45rem 0;
         }
 
         .soft-card {
@@ -420,19 +640,6 @@ def apply_theme() -> None:
             50% { opacity: 1; transform: translateY(-50%) translateX(2px) rotate(45deg); }
         }
 
-        .quote-card {
-            border-left: 5px solid var(--bwdc-gold-deep);
-            background: #fff7dc;
-            border-radius: 8px;
-            padding: 1rem 1.1rem;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        .quote-card em {
-            color: var(--bwdc-teal-deep);
-        }
-
         .evidence-card {
             border: 1px solid var(--bwdc-line);
             border-radius: 8px;
@@ -468,6 +675,15 @@ def apply_theme() -> None:
             font-style: italic;
             line-height: 1.42;
             background: rgba(255, 247, 220, 0.58);
+        }
+
+        .mini-quote small {
+            display: block;
+            margin-top: 0.35rem;
+            color: var(--bwdc-muted);
+            font-style: normal;
+            font-size: 0.78rem;
+            font-weight: 700;
         }
 
         .badge-row {

@@ -81,7 +81,7 @@ def quote_source_for(quote: str) -> str:
 def quote_block(quote: str, source=None) -> str:
     speaker = source or quote_source_for(quote)
     return (
-        f'<div class="mini-quote">"{escape(quote)}"'
+        f'<div class="quote-card">"{escape(quote)}"'
         f'<br><small>{escape(speaker)}</small></div>'
     )
 
@@ -90,7 +90,7 @@ def render_theme_card(theme: dict, compact: bool = False) -> None:
     related_nodes = nodes_for_theme(theme["id"])
     st.markdown(
         f"""
-        <div class="evidence-card" id="theme-{theme["id"]}">
+        <div class="reference-card" id="theme-{theme["id"]}">
             <div class="badge-row">
                 <span class="level-badge" style="background:#eef7e8;">{theme["level"]}</span>
             </div>
@@ -287,12 +287,18 @@ selected_theme = THEME_BY_ID.get(selected_theme_id) if selected_theme_id else No
 st.title("Interview")
 st.markdown(
     """
+    <div class="report-intro">
+    <p>
     Tangled titles in Baltimore sit at the intersection of law, family, housing,
     and structural inequality. Interviews with legal, housing, civic design, and
     policy stakeholders show that title problems often remain invisible until
     residents seek repairs, receive tax sale notices, or try to access public
     benefits.
+    </p>
+    </div>
     """
+    ,
+    unsafe_allow_html=True,
 )
 
 if selected_theme:
@@ -356,7 +362,7 @@ for col, (title, description) in zip(perspective_cols, perspective_cards):
     with col:
         st.markdown(
             f"""
-            <div class="evidence-card compact-card" style="min-height:190px;">
+            <div class="profile-card">
                 <span class="rq-badge">Perspective</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
@@ -389,7 +395,7 @@ for col, (title, explanation, quote) in zip(cols, message_cards):
         quote_html = quote_block(quote)
         st.markdown(
             f"""
-            <div class="evidence-card" style="min-height:285px;">
+            <div class="summary-card">
                 <span class="rq-badge">Interview message</span>
                 <h3>{title}</h3>
                 <p>{explanation}</p>
@@ -465,11 +471,11 @@ highlight_columns = st.columns(2)
 for idx, (title, bullets, quotes) in enumerate(highlight_cards):
     with highlight_columns[idx % 2]:
         bullet_html = "".join(f"<li>{escape(item)}</li>" for item in bullets)
-        quote_html = "".join(quote_block(quote) for quote in quotes[:2])
+        quote_html = "".join(quote_block(quote) for quote in quotes)
         with st.container(border=True):
             st.markdown(
                 f"""
-                <div class="evidence-card compact-card">
+                <div class="evidence-card evidence-board-card">
                     <span class="rq-badge">Evidence pattern</span>
                     <h3>{escape(title)}</h3>
                     <ul>{bullet_html}</ul>
@@ -489,6 +495,15 @@ st.markdown(
 )
 
 with st.expander("Explore recurring words from interviews", expanded=False):
+    st.markdown(
+        """
+        <div class="figure-container">
+            <h3>Recurring interview language</h3>
+            <p class="figure-caption">Click a term inside the visualization for a short interpretive note.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     render_interactive_word_cloud_panel(WORD_CLOUD_TERMS)
     st.caption(
         "Terms were cleaned and grouped to emphasize analytically meaningful interview language rather than raw transcript frequency."
@@ -512,9 +527,9 @@ with st.expander("Selected quotes behind the recurring words", expanded=False):
                 st.markdown(
                     f"""
                     <div class="evidence-card" style="min-height:285px;">
-                        <div class="mini-quote" style="line-height:1.48;">"{escape(quote)}"<br><small>{escape(speaker)}</small></div>
+                        <div class="quote-card">"{escape(quote)}"<br><small>{escape(speaker)}</small></div>
                         <div class="badge-row">
-                            <span class="node-chip">{escape(theme_label)}</span>
+                            <span class="tag-pill">{escape(theme_label)}</span>
                         </div>
                         <p class="muted-note">Theme: {escape(theme["title"] if theme else theme_id)}</p>
                         <p class="muted-note">Power map node: {escape(node["label"] if node else node_id)}</p>

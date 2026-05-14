@@ -1,4 +1,5 @@
 import sys
+from html import escape
 from pathlib import Path
 
 import plotly.graph_objects as go
@@ -296,7 +297,7 @@ def render_node_card(node: dict, detail: bool = False, key_prefix: str = "node")
     first_sentence = node["description"].split(".")[0].strip() + "."
     st.markdown(
         f"""
-        <div class="evidence-card" id="node-{node["id"]}">
+        <div class="reference-card" id="node-{node["id"]}">
             <div class="badge-row">
                 {level_badge(node["level"])}
                 {type_badge(node["type"])}
@@ -369,10 +370,16 @@ selected_node = NODE_BY_ID.get(selected_node_id) if selected_node_id else None
 st.title("Power Map")
 st.markdown(
     """
+    <div class="report-intro">
+    <p>
     Tangled titles are not caused by one missing form. They emerge when family
     inheritance, legal records, repair programs, tax systems, and housing markets
     fail to recognize the same person as the homeowner.
+    </p>
+    </div>
     """
+    ,
+    unsafe_allow_html=True,
 )
 
 if selected_node:
@@ -433,26 +440,32 @@ filtered_nodes = [
     if node["id"] != "tangled_titles" and node_matches_filters(node, level_filter, type_filter, search.strip())
 ]
 
-st.markdown("### Structured Interactive Plot")
-st.caption(
-    "The plot uses fixed positions: columns are ecosystem levels, node numbers are stable, and hover reveals the full label, description, and related interview themes."
-)
-render_structured_power_plot(filtered_nodes)
-if filtered_nodes:
-    plot_options = {
-        f"{plot_node_number(node['id'])}. {node['label']}": node["id"]
-        for node in sorted(filtered_nodes, key=lambda item: plot_node_number(item["id"]))
-    }
-    selected_plot_label = st.selectbox(
-        "Select a plotted node to open its detail panel",
-        ["Choose a node"] + list(plot_options.keys()),
-        key="structured-plot-node-select",
+with st.container(border=True):
+    st.markdown(
+        """
+        <div class="figure-container">
+            <h3>Structured Interactive Plot</h3>
+            <p class="figure-caption">The plot uses fixed positions: columns are ecosystem levels, node numbers are stable, and hover reveals the full label, description, and related interview themes.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
-    if selected_plot_label != "Choose a node" and st.button("Open selected plotted node"):
-        st.session_state["selected_node"] = plot_options[selected_plot_label]
-        st.rerun()
-else:
-    st.warning("No nodes match the current filters.")
+    render_structured_power_plot(filtered_nodes)
+    if filtered_nodes:
+        plot_options = {
+            f"{plot_node_number(node['id'])}. {node['label']}": node["id"]
+            for node in sorted(filtered_nodes, key=lambda item: plot_node_number(item["id"]))
+        }
+        selected_plot_label = st.selectbox(
+            "Select a plotted node to open its detail panel",
+            ["Choose a node"] + list(plot_options.keys()),
+            key="structured-plot-node-select",
+        )
+        if selected_plot_label != "Choose a node" and st.button("Open selected plotted node"):
+            st.session_state["selected_node"] = plot_options[selected_plot_label]
+            st.rerun()
+    else:
+        st.warning("No nodes match the current filters.")
 
 with st.expander("Node number key", expanded=False):
     key_rows = [
@@ -507,7 +520,7 @@ for idx, lane in enumerate(SYSTEM_TOUCHPOINT_LANES):
         background = level_background(level)
         st.markdown(
             f"""
-            <div class="evidence-card" style="background:{background}; border-left:8px solid {border_color};">
+            <div class="profile-card" style="background:{background}; border-left:8px solid {border_color};">
                 <div class="badge-row">{level_badge(level)}</div>
                 <h3>{idx + 1}. {lane["lane"]}</h3>
                 <p><strong>Actors:</strong> {", ".join(lane["examples"])}</p>
@@ -522,8 +535,17 @@ cols = st.columns(3)
 for column, node_type in zip(cols, ["Barrier", "Facilitator", "Mixed"]):
     typed_nodes = [node for node in POWER_NODES if node["type"] == node_type]
     with column:
-        st.metric(node_type, len(typed_nodes))
-        st.caption("; ".join(sorted({node["level"] for node in typed_nodes})[:4]))
+        levels_text = "; ".join(sorted({node["level"] for node in typed_nodes})[:4])
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                {type_badge(node_type)}
+                <span class="metric-value">{len(typed_nodes)}</span>
+                <p class="muted-note">{escape(levels_text)}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 st.info(
     "The system contains more documented barriers than facilitators, which suggests that intervention requires coordinated changes across legal, housing, tax, and community systems."
@@ -549,23 +571,45 @@ st.markdown(
 )
 
 with st.expander("Explore intervention leverage points", expanded=False):
-    for leverage_point, theme_ids in INTERVENTION_LEVERAGE_POINTS:
-        st.markdown(f"### {leverage_point}")
-        for theme_id in theme_ids[:3]:
-            theme = THEME_BY_ID.get(theme_id)
-            if not theme:
-                continue
-            st.markdown(f"**{theme['title']}**")
-            st.caption(theme["implications"])
-            if st.button(
-                f"View interview evidence: {theme['title']}",
-                key=f"leverage-{leverage_point}-{theme_id}",
-            ):
-                switch_to_interview(theme_id)
+    leverage_cols = st.columns(2)
+    for idx, (leverage_point, theme_ids) in enumerate(INTERVENTION_LEVERAGE_POINTS):
+        with leverage_cols[idx % 2]:
+            st.markdown(
+                f"""
+                <div class="action-tile">
+                    <span class="tag-pill">Leverage point</span>
+                    <h3>{escape(leverage_point)}</h3>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            for theme_id in theme_ids[:3]:
+                theme = THEME_BY_ID.get(theme_id)
+                if not theme:
+                    continue
+                st.markdown(f"**{theme['title']}**")
+                st.caption(theme["implications"])
+                if st.button(
+                    f"View interview evidence: {theme['title']}",
+                    key=f"leverage-{leverage_point}-{theme_id}",
+                    use_container_width=True,
+                ):
+                    switch_to_interview(theme_id)
 
 with st.expander("Local implementation resources", expanded=False):
     st.markdown(
         "These links supplement the intervention logic with concrete local planning, legal aid, financial counseling, and tax-sale prevention touchpoints."
     )
-    for resource in QUALITATIVE_SLIDE_RESOURCE_LINKS:
-        st.markdown(f"- [{resource['label']}]({resource['url']}): {resource['focus']}")
+    resource_cols = st.columns(2)
+    for idx, resource in enumerate(QUALITATIVE_SLIDE_RESOURCE_LINKS):
+        with resource_cols[idx % 2]:
+            st.markdown(
+                f"""
+                <div class="link-card">
+                    <span class="tag-pill">Local resource</span>
+                    <h3><a href="{escape(resource['url'])}" target="_blank">{escape(resource['label'])}</a></h3>
+                    <p>{escape(resource['focus'])}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
