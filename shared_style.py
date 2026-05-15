@@ -965,14 +965,20 @@ def apply_theme() -> None:
         }
 
         .image-card.medium img {
-            height: 260px;
-            max-height: 260px;
+            height: 300px;
+            max-height: 300px;
+            min-height: 300px;
+            object-fit: cover;
         }
 
         .image-card.stakeholder img {
             height: auto;
             max-height: none;
             object-fit: contain;
+        }
+
+        .image-card.page-ending-image {
+            margin-bottom: 0;
         }
 
         .overview-inline-card {

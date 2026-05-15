@@ -305,7 +305,7 @@ if query_theme_id:
 selected_theme_id = st.session_state.get("selected_theme")
 selected_theme = THEME_BY_ID.get(selected_theme_id) if selected_theme_id else None
 
-intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="center")
+intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="bottom")
 with intro_text_col:
     st.title("Interview")
     st.markdown(
@@ -561,7 +561,6 @@ with st.expander("Selected quotes behind the recurring words", expanded=False):
                             <span class="tag-pill">{escape(theme_label)}</span>
                         </div>
                         <p class="muted-note">Theme: {escape(theme["title"] if theme else theme_id)}</p>
-                        <p class="muted-note">Power map node: {escape(node["label"] if node else node_id)}</p>
                     </div>
                     """,
                     unsafe_allow_html=True,

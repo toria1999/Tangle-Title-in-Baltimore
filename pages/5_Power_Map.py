@@ -355,7 +355,6 @@ def render_node_card(node: dict, detail: bool = False, key_prefix: str = "node",
     related_themes = themes_for_node(node["id"])
     if related_themes:
         with st.expander("Related interview evidence", expanded=detail):
-            st.markdown(node["description"])
             for theme in related_themes[:5]:
                 if st.button(
                     f"View interview evidence: {theme['title']}",
@@ -411,7 +410,7 @@ def render_level(level: str, nodes: list[dict], expanded: bool = False) -> None:
 selected_node_id = st.session_state.get("selected_node")
 selected_node = NODE_BY_ID.get(selected_node_id) if selected_node_id else None
 
-intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="center")
+intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="bottom")
 with intro_text_col:
     st.title("Power Map")
     st.markdown(
@@ -529,18 +528,6 @@ with st.container(border=True):
             key_prefix="plot-detail",
             show_select_button=False,
         )
-
-with st.expander("Node number key", expanded=False):
-    key_rows = [
-        {
-            "#": plot_node_number(node["id"]),
-            "Node": node["label"],
-            "Level": node["level"],
-            "Type": node["type"],
-        }
-        for node in sorted(filtered_nodes, key=lambda item: plot_node_number(item["id"]))
-    ]
-    st.dataframe(key_rows, width="stretch", hide_index=True, height=260)
 
 primary_levels = [
     "Individual Level Factors",
@@ -686,6 +673,6 @@ with st.expander("Local implementation resources", expanded=False):
 
 render_local_image(
     "interview_stakeholder_evidence.png",
-    "image-card stakeholder",
+    "image-card stakeholder page-ending-image",
     "Community-facing stakeholder engagement and outreach.",
 )
