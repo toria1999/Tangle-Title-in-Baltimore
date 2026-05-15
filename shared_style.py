@@ -102,6 +102,59 @@ def apply_theme() -> None:
             background: rgba(184, 138, 45, 0.16) !important;
         }
 
+        div[data-testid="stButton"] button,
+        div[data-testid="stDownloadButton"] button,
+        button[kind],
+        button[data-testid],
+        [role="button"] {
+            transition: border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
+        }
+
+        div[data-testid="stButton"] button:hover,
+        div[data-testid="stDownloadButton"] button:hover,
+        button[kind]:hover,
+        button[data-testid]:hover,
+        [role="button"]:hover {
+            border-color: var(--bwdc-gold-deep) !important;
+            color: var(--bwdc-teal-deep) !important;
+            box-shadow: 0 0 0 1px rgba(200, 143, 46, 0.28) !important;
+        }
+
+        div[data-testid="stButton"] button:focus,
+        div[data-testid="stButton"] button:active,
+        div[data-testid="stDownloadButton"] button:focus,
+        div[data-testid="stDownloadButton"] button:active,
+        button[kind]:focus,
+        button[kind]:active,
+        button[data-testid]:focus,
+        button[data-testid]:active,
+        [role="button"]:focus,
+        [role="button"]:active {
+            border-color: var(--bwdc-gold-deep) !important;
+            box-shadow: 0 0 0 2px rgba(200, 143, 46, 0.34) !important;
+            outline-color: var(--bwdc-gold-deep) !important;
+        }
+
+        div[data-testid="stCheckbox"] label,
+        div[data-testid="stRadio"] label {
+            color: var(--bwdc-teal-deep) !important;
+        }
+
+        div[data-testid="stCheckbox"] [aria-checked="true"],
+        div[data-testid="stRadio"] [aria-checked="true"],
+        div[data-testid="stCheckbox"] input:checked + div,
+        div[data-testid="stRadio"] input:checked + div {
+            border-color: var(--bwdc-gold-deep) !important;
+            background-color: var(--bwdc-gold-deep) !important;
+            box-shadow: 0 0 0 2px rgba(200, 143, 46, 0.26) !important;
+        }
+
+        div[data-baseweb="tab-list"] [aria-selected="true"] {
+            color: var(--bwdc-teal-deep) !important;
+            border-color: var(--bwdc-gold-deep) !important;
+            box-shadow: inset 0 -3px 0 var(--bwdc-gold-deep) !important;
+        }
+
         section[data-testid="stSidebar"] {
             background: var(--bwdc-teal);
         }
@@ -112,10 +165,19 @@ def apply_theme() -> None:
 
         div[data-testid="stSidebarNav"] a {
             border-radius: 8px;
+            position: relative;
+            z-index: 3;
+            pointer-events: auto;
         }
 
-        div[data-testid="stSidebarNav"] a:hover {
-            background: rgba(239, 194, 103, 0.18);
+        div[data-testid="stSidebarNav"] a:hover,
+        div[data-testid="stSidebarNav"] a:focus,
+        div[data-testid="stSidebarNav"] a:active,
+        div[data-testid="stSidebarNav"] a[aria-current="page"] {
+            background: rgba(239, 194, 103, 0.22) !important;
+            border-color: var(--bwdc-gold) !important;
+            box-shadow: inset 3px 0 0 var(--bwdc-gold) !important;
+            outline-color: var(--bwdc-gold) !important;
         }
 
         .support-badge {
@@ -1248,6 +1310,8 @@ def render_page_toc(page_key: str, sections: tuple[tuple[str, str], ...]) -> Non
                 }}
                 section[data-testid="stSidebar"] #{toc_root_id} .page-toc-item {{
                     display: block;
+                    position: relative;
+                    z-index: 3;
                     margin: 0.08rem 0;
                     padding: 0.38rem 0.45rem;
                     border: 2px solid transparent !important;
@@ -1257,15 +1321,16 @@ def render_page_toc(page_key: str, sections: tuple[tuple[str, str], ...]) -> Non
                     font-size: 1em;
                     line-height: inherit;
                     font-weight: 500 !important;
+                    pointer-events: auto;
                 }}
                 section[data-testid="stSidebar"] #{toc_root_id} .page-toc-item:hover {{
-                    background: rgba(239, 194, 103, 0.15) !important;
+                    background: rgba(239, 194, 103, 0.18) !important;
                 }}
                 section[data-testid="stSidebar"] #{toc_root_id} .page-toc-item.toc-active {{
                     font-weight: 700 !important;
                     color: #fffaf0 !important;
                     border: 2px solid #efc267 !important;
-                    background: rgba(0, 0, 0, 0.18) !important;
+                    background: rgba(239, 194, 103, 0.24) !important;
                 }}
             </style>
             <div id="{toc_root_id}">
@@ -1415,6 +1480,11 @@ def render_page_toc(page_key: str, sections: tuple[tuple[str, str], ...]) -> Non
         }}
 
         function bind() {{
+            if (window.frameElement) {{
+                window.frameElement.style.pointerEvents = "none";
+                window.frameElement.style.height = "1px";
+                window.frameElement.style.minHeight = "1px";
+            }}
             const scrollTargets = gatherScrollTargets();
             W.{targets_name} = [];
             scrollTargets.forEach(function (t) {{

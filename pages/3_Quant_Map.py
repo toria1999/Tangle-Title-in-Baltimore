@@ -1052,6 +1052,8 @@ with st.sidebar:
             }}
             section[data-testid="stSidebar"] #quant-toc-root .quant-toc-item {{
                 display: block;
+                position: relative;
+                z-index: 3;
                 margin: 0.08rem 0;
                 padding: 0.38rem 0.45rem;
                 border: 2px solid transparent !important;
@@ -1061,15 +1063,16 @@ with st.sidebar:
                 font-size: 1em;
                 line-height: inherit;
                 font-weight: 500 !important;
+                pointer-events: auto;
             }}
             section[data-testid="stSidebar"] #quant-toc-root .quant-toc-item:hover {{
-                background: rgba(239, 194, 103, 0.15) !important;
+                background: rgba(239, 194, 103, 0.18) !important;
             }}
             section[data-testid="stSidebar"] #quant-toc-root .quant-toc-item.toc-active {{
                 font-weight: 700 !important;
                 color: #fffaf0 !important;
                 border: 2px solid #efc267 !important;
-                background: rgba(0, 0, 0, 0.18) !important;
+                background: rgba(239, 194, 103, 0.24) !important;
             }}
         </style>
         <div id="quant-toc-root">
@@ -1678,6 +1681,11 @@ _QUANT_TOC_SCROLL_SPY = """
     }
 
     function bind() {
+        if (window.frameElement) {
+            window.frameElement.style.pointerEvents = "none";
+            window.frameElement.style.height = "1px";
+            window.frameElement.style.minHeight = "1px";
+        }
         const scrollTargets = gatherScrollTargets();
         W.__quantTocScrollTargets = [];
         scrollTargets.forEach(function (t) {

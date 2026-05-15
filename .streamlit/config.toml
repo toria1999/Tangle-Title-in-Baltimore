@@ -6,8 +6,8 @@
 # Requires a recent Streamlit version; if the key is ignored, upgrade Streamlit or set typography in shared_style.py.
 baseFontSize = 18
 
-# Align with shared_style palette (optional; uncomment to drive Streamlit widgets)
-# primaryColor = "#294943"
-# backgroundColor = "#fffaf0"
-# secondaryBackgroundColor = "#fff7dc"
-# textColor = "#18312d"
+# Align Streamlit widget focus, active, and selected states with the site palette.
+primaryColor = "#c88f2e"
+backgroundColor = "#fffaf0"
+secondaryBackgroundColor = "#fff7dc"
+textColor = "#18312d"
