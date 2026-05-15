@@ -427,6 +427,15 @@ with intro_text_col:
         ,
         unsafe_allow_html=True,
     )
+    st.markdown(
+        """
+        <div class="overview-inline-card" id="overview">
+            <h2>Overview</h2>
+            <p><strong>Which systems create or reduce tangled title risk?</strong> The map shows where individual knowledge gaps, family conflict, community services, legal systems, tax pressure, and structural inequality become connected.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 with intro_image_col:
     render_local_image(
         "power_map_system_touchpoints.png",
@@ -449,20 +458,6 @@ if selected_node:
         st.session_state.pop("selected_node", None)
         st.rerun()
 
-section_h2("overview", "Overview")
-overview_col, overview_spacer = st.columns([0.72, 0.28])
-with overview_col:
-    st.markdown(
-        """
-        <div class="key-takeaway-card">
-            <strong>Which systems create or reduce tangled title risk?</strong>
-            The map shows where individual knowledge gaps, family conflict,
-            community services, legal systems, tax pressure, and structural inequality
-            become connected.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 section_h2("hierarchical-power-map", "Hierarchical Power Map")
 central = NODE_BY_ID["tangled_titles"]
 st.markdown(
@@ -696,3 +691,9 @@ with st.expander("Local implementation resources", expanded=False):
                 """,
                 unsafe_allow_html=True,
             )
+
+render_local_image(
+    "interview_stakeholder_evidence.png",
+    "image-card stakeholder",
+    "Community-facing stakeholder engagement and outreach.",
+)

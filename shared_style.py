@@ -965,7 +965,33 @@ def apply_theme() -> None:
         }
 
         .image-card.medium img {
-            max-height: 255px;
+            height: 320px;
+            max-height: 340px;
+        }
+
+        .image-card.stakeholder img {
+            max-height: 310px;
+        }
+
+        .overview-inline-card {
+            border-left: 5px solid var(--bwdc-gold);
+            border-radius: 10px;
+            background: rgba(255, 247, 220, 0.74);
+            padding: 0.88rem 1rem;
+            margin-top: 0.85rem;
+            box-shadow: 0 8px 18px rgba(24, 49, 45, 0.06);
+        }
+
+        .overview-inline-card h2 {
+            margin: 0 0 0.35rem;
+            font-size: 1.12rem;
+            color: var(--bwdc-teal-deep);
+        }
+
+        .overview-inline-card p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--bwdc-teal-deep);
         }
 
         .image-caption {

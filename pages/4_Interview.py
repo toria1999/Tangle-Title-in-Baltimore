@@ -323,6 +323,15 @@ with intro_text_col:
         ,
         unsafe_allow_html=True,
     )
+    st.markdown(
+        """
+        <div class="overview-inline-card" id="overview">
+            <h2>Overview</h2>
+            <p><strong>What did stakeholders repeatedly say?</strong> Tangled titles are not only a paperwork problem. They emerge when family relationships, service pathways, legal institutions, economic constraints, and racialized housing inequality collide.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 with intro_image_col:
     render_local_image(
         "power_map_multilevel_ecosystem.png",
@@ -349,19 +358,6 @@ if selected_theme:
             del st.query_params["theme"]
         st.rerun()
 
-section_h2("overview", "Overview")
-st.markdown(
-    """
-    <div class="key-takeaway-card">
-        <strong>What did stakeholders repeatedly say?</strong>
-        Tangled titles are not only a paperwork problem. They emerge when family
-        relationships, service pathways, legal institutions, economic constraints,
-        and racialized housing inequality collide.
-    </div>
-    """
-    ,
-    unsafe_allow_html=True,
-)
 section_h2("interviewee-perspectives", "Interviewee Perspectives")
 st.markdown(
     """
