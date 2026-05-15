@@ -1040,7 +1040,7 @@ RESIDENT_JOURNEY_STAGES = [
         "image": f"{TASHA_JOURNEY_ASSET_DIR}/tasha_01_family_legacy.png",
         "alt": "Tasha Johnson standing in or near her long-time family home, showing family legacy and hidden title uncertainty.",
         "story_hook": "At home, Tasha is the person who keeps the house going.",
-        "narrative": "Tasha is a 35-year-old head of household in West Baltimore who earns $16.61 an hour as a full-time receptionist. The house she calls home is more than shelter; it is a 66-year family legacy and her family's largest financial asset. In daily life, she and other heirs behave like the real owners, but the legal ownership record has not caught up with the family reality.",
+        "narrative": "Tasha is a 35-year-old head of household in West Baltimore who earns $16.61 an hour as a full-time receptionist. The house she calls home is more than shelter; it is a 66-year family legacy and her family's largest financial asset. In daily life, Tasha and four other heirs all have a stake in what happens to the property, so repair, tax, sale, or transfer decisions can become contested even though Tasha is the person keeping the house going. The legal ownership record has not caught up with the family reality.",
         "touchpoint": "Household, family inheritance, deed records",
         "power_map_connection": "Individual level, interpersonal level, estate planning, formal ownership vs lived ownership",
         "barrier": "The problem is mostly invisible because Tasha's grandparents did not have a notarized will or clear transfer documents, so deceased owners remain on the deed.",

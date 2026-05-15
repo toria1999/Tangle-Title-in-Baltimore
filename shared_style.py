@@ -81,6 +81,27 @@ def apply_theme() -> None:
             font-weight: 700 !important;
         }
 
+        div[data-testid="stSelectbox"] [data-baseweb="select"] > div,
+        div[data-testid="stMultiSelect"] [data-baseweb="select"] > div,
+        div[data-testid="stTextInput"] input,
+        div[data-testid="stTextArea"] textarea {
+            border-color: rgba(184, 138, 45, 0.32) !important;
+        }
+
+        div[data-testid="stSelectbox"] [data-baseweb="select"] > div:focus-within,
+        div[data-testid="stMultiSelect"] [data-baseweb="select"] > div:focus-within,
+        div[data-testid="stTextInput"] input:focus,
+        div[data-testid="stTextArea"] textarea:focus {
+            border-color: var(--bwdc-gold-deep) !important;
+            box-shadow: 0 0 0 1px var(--bwdc-gold-deep) !important;
+            outline-color: var(--bwdc-gold-deep) !important;
+        }
+
+        div[data-baseweb="popover"] [role="option"]:hover,
+        div[data-baseweb="popover"] [aria-selected="true"] {
+            background: rgba(184, 138, 45, 0.16) !important;
+        }
+
         section[data-testid="stSidebar"] {
             background: var(--bwdc-teal);
         }
