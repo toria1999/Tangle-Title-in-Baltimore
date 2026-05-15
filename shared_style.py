@@ -330,13 +330,13 @@ def apply_theme() -> None:
 
         .action-bullet-list li {
             position: relative;
-            padding: 0.58rem 0.68rem 0.58rem 1.8rem;
             margin: 0.42rem 0;
             border: 1px solid rgba(41, 73, 67, 0.12);
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.72);
             color: var(--bwdc-muted);
             line-height: 1.38;
+            overflow: hidden;
         }
 
         .action-bullet-list li::before {
@@ -348,12 +348,32 @@ def apply_theme() -> None:
             height: 0.42rem;
             border-radius: 999px;
             background: var(--bwdc-gold-deep);
+            z-index: 1;
         }
 
         .action-bullet-list strong {
             color: var(--bwdc-teal-deep);
             font-size: 0.92rem;
             line-height: 1.28;
+        }
+
+        .action-bullet-link {
+            display: block;
+            padding: 0.58rem 0.68rem 0.58rem 1.8rem;
+            color: var(--bwdc-muted) !important;
+            text-decoration: none !important;
+        }
+
+        .action-bullet-link:hover {
+            background: rgba(215, 232, 189, 0.24);
+        }
+
+        .action-bullet-link .link-cue {
+            display: inline-block;
+            margin-top: 0.28rem;
+            color: var(--bwdc-teal-deep);
+            font-size: 0.78rem;
+            font-weight: 800;
         }
 
         .action-button-note {

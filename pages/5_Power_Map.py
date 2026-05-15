@@ -578,7 +578,15 @@ with st.expander("Explore intervention leverage points", expanded=False):
             themes = [theme for theme in themes if theme]
             summary = themes[0]["implications"] if themes else "Connect this leverage point to related interview evidence."
             theme_rows = "".join(
-                f"<li><strong>{escape(theme['title'])}</strong><br>{escape(theme['implications'])}</li>"
+                (
+                    "<li>"
+                    f'<a class="action-bullet-link" href="/Interview?theme={escape(theme["id"])}#selected-interview-evidence" target="_self">'
+                    f"<strong>{escape(theme['title'])}</strong><br>"
+                    f"{escape(theme['implications'])}"
+                    '<br><span class="link-cue">View in Interview evidence</span>'
+                    "</a>"
+                    "</li>"
+                )
                 for theme in themes
             )
             st.markdown(
@@ -596,14 +604,6 @@ with st.expander("Explore intervention leverage points", expanded=False):
                 ),
                 unsafe_allow_html=True,
             )
-            st.markdown('<p class="action-button-note">Open related interview evidence</p>', unsafe_allow_html=True)
-            for button_idx, theme in enumerate(themes):
-                if st.button(
-                    f"{button_idx + 1}. {theme['title']}",
-                    key=f"leverage-{leverage_point}-{theme['id']}",
-                    use_container_width=True,
-                ):
-                    switch_to_interview(theme["id"])
 
 with st.expander("Local implementation resources", expanded=False):
     st.markdown(

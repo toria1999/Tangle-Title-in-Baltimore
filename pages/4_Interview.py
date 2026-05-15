@@ -281,6 +281,12 @@ def render_interactive_word_cloud_panel(terms: list[dict]) -> None:
     )
 
 
+query_theme_id = st.query_params.get("theme")
+if isinstance(query_theme_id, list):
+    query_theme_id = query_theme_id[0] if query_theme_id else None
+if query_theme_id:
+    st.session_state["selected_theme"] = query_theme_id
+
 selected_theme_id = st.session_state.get("selected_theme")
 selected_theme = THEME_BY_ID.get(selected_theme_id) if selected_theme_id else None
 
@@ -304,15 +310,20 @@ st.markdown(
 if selected_theme:
     st.markdown(
         f"""
-        <div class="detail-panel">
-            <strong>Selected theme from Power Map:</strong><br>
-            {selected_theme["title"]}
+        <div class="detail-panel" id="selected-interview-evidence">
+            <span class="tag-pill">Selected from Power Map</span>
+            <h3>{escape(selected_theme["title"])}</h3>
+            <p>{escape(selected_theme["short_summary"])}</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    for quote in selected_theme["key_quotes"][:3]:
+        st.markdown(quote_block(quote), unsafe_allow_html=True)
     if st.button("Clear selected theme", key="clear-selected-theme"):
         st.session_state.pop("selected_theme", None)
+        if "theme" in st.query_params:
+            del st.query_params["theme"]
         st.rerun()
 
 section_h2("overview", "Overview")
