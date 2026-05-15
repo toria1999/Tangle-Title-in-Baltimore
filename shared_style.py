@@ -971,6 +971,20 @@ def apply_theme() -> None:
             object-fit: cover;
         }
 
+        .image-card.intro-image {
+            margin: 0.85rem 0 0;
+            background: rgba(255, 250, 240, 0.84);
+        }
+
+        .image-card.intro-image img {
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .quote-wall-card {
+            min-height: auto;
+        }
+
         .image-card.stakeholder img {
             height: auto;
             max-height: none;

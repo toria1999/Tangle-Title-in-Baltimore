@@ -325,7 +325,7 @@ with intro_text_col:
 with intro_image_col:
     render_local_image(
         "power_map_multilevel_ecosystem.png",
-        "image-card medium",
+        "image-card medium intro-image",
         "Multilevel ecosystem around tangled title risk.",
     )
 
@@ -555,7 +555,7 @@ with st.expander("Selected quotes behind the recurring words", expanded=False):
             with columns[idx % 2]:
                 st.markdown(
                     f"""
-                    <div class="evidence-card" style="min-height:285px;">
+                    <div class="evidence-card quote-wall-card">
                         <div class="quote-card">"{escape(quote)}"<br><small>{escape(speaker)}</small></div>
                         <div class="badge-row">
                             <span class="tag-pill">{escape(theme_label)}</span>

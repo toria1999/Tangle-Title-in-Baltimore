@@ -336,7 +336,7 @@ def render_structured_power_plot(nodes: list[dict]) -> str | None:
     return selected_node_id_from_plot_state(plot_state)
 
 
-def render_node_card(node: dict, detail: bool = False, key_prefix: str = "node", show_select_button: bool = True) -> None:
+def render_node_card(node: dict, detail: bool = False, key_prefix: str = "node") -> None:
     first_sentence = node["description"].split(".")[0].strip() + "."
     st.markdown(
         f"""
@@ -372,15 +372,6 @@ def render_node_card(node: dict, detail: bool = False, key_prefix: str = "node",
                         f'<div class="mini-quote">"{quote}"<br><small>{theme_title}</small></div>',
                         unsafe_allow_html=True,
                     )
-
-    if show_select_button:
-        if st.button(
-            "Show details here",
-            key=f"{key_prefix}-select-node-{node['id']}",
-            use_container_width=True,
-        ):
-            st.session_state["selected_node"] = node["id"]
-            st.rerun()
 
 
 def render_level(level: str, nodes: list[dict], expanded: bool = False) -> None:
@@ -430,7 +421,7 @@ with intro_text_col:
 with intro_image_col:
     render_local_image(
         "power_map_system_touchpoints.png",
-        "image-card medium",
+        "image-card medium intro-image",
         "System touchpoints around tangled title risk.",
     )
 
@@ -526,7 +517,6 @@ with st.container(border=True):
             plot_detail_node,
             detail=True,
             key_prefix="plot-detail",
-            show_select_button=False,
         )
 
 primary_levels = [
