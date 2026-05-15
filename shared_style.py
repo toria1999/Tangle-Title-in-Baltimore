@@ -964,11 +964,50 @@ def apply_theme() -> None:
             max-height: 240px;
         }
 
+        .image-card.medium img {
+            max-height: 255px;
+        }
+
         .image-caption {
             padding: 0.45rem 0.7rem 0.55rem;
             color: var(--bwdc-muted);
             font-size: 0.86rem;
             line-height: 1.35;
+        }
+
+        .two-column-feature {
+            margin: 0.25rem 0 1.3rem;
+        }
+
+        .two-column-feature-text {
+            max-width: 820px;
+        }
+
+        .two-column-feature-image {
+            align-self: center;
+        }
+
+        .section-lead {
+            font-size: 1.08rem;
+            line-height: 1.5;
+            color: var(--bwdc-teal-deep);
+            font-weight: 750;
+            margin: 0 0 0.45rem;
+        }
+
+        .section-supporting-text {
+            color: var(--bwdc-muted);
+            font-size: 0.98rem;
+            line-height: 1.55;
+            margin: 0.35rem 0 0;
+        }
+
+        .interpretive-lead-card {
+            border-left: 5px solid var(--bwdc-gold);
+            border-radius: 10px;
+            background: rgba(255, 250, 240, 0.78);
+            padding: 1rem 1.05rem;
+            box-shadow: 0 8px 18px rgba(24, 49, 45, 0.06);
         }
 
         .journey-image-placeholder {

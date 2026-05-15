@@ -305,22 +305,30 @@ if query_theme_id:
 selected_theme_id = st.session_state.get("selected_theme")
 selected_theme = THEME_BY_ID.get(selected_theme_id) if selected_theme_id else None
 
-st.title("Interview")
-st.markdown(
-    """
-    <div class="report-intro">
-    <p>
-    Tangled titles in Baltimore sit at the intersection of law, family, housing,
-    and structural inequality. Interviews with legal, housing, civic design, and
-    policy stakeholders show that title problems often remain invisible until
-    residents seek repairs, receive tax sale notices, or try to access public
-    benefits.
-    </p>
-    </div>
-    """
-    ,
-    unsafe_allow_html=True,
-)
+intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="center")
+with intro_text_col:
+    st.title("Interview")
+    st.markdown(
+        """
+        <div class="report-intro">
+        <p>
+        Tangled titles in Baltimore sit at the intersection of law, family, housing,
+        and structural inequality. Interviews with legal, housing, civic design, and
+        policy stakeholders show that title problems often remain invisible until
+        residents seek repairs, receive tax sale notices, or try to access public
+        benefits.
+        </p>
+        </div>
+        """
+        ,
+        unsafe_allow_html=True,
+    )
+with intro_image_col:
+    render_local_image(
+        "power_map_multilevel_ecosystem.png",
+        "image-card medium",
+        "Multilevel ecosystem around tangled title risk.",
+    )
 
 if selected_theme:
     st.markdown(
@@ -395,12 +403,6 @@ for col, (title, description) in zip(perspective_cols, perspective_cards):
             """,
             unsafe_allow_html=True,
         )
-
-render_local_image(
-    "interview_stakeholder_evidence.png",
-    "image-banner",
-    "Community-facing stakeholder engagement and outreach.",
-)
 
 section_h2("three-messages", "Three messages from the interviews")
 message_cards = [
@@ -521,7 +523,10 @@ word_intro_col, word_image_col = st.columns([0.68, 0.32], vertical_alignment="ce
 with word_intro_col:
     st.markdown(
         """
-        <p class="section-subtitle">This interactive word cloud offers a quick orientation to recurring interview language. It is not a substitute for the themes, quotes, and resident narratives below.</p>
+        <div class="interpretive-lead-card">
+            <p class="section-lead">This word cloud is a quick orientation to major interview patterns, not a substitute for the deeper evidence below.</p>
+            <p class="section-supporting-text">It helps readers see which ideas, barriers, and processes appeared repeatedly across stakeholder interviews: repairs, deed transfer, estate planning, heirs' property, taxes, family conflict, and community outreach. The selected quotes and theme explorer provide the fuller interpretation.</p>
+        </div>
         """
         ,
         unsafe_allow_html=True,

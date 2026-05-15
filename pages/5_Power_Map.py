@@ -411,20 +411,28 @@ def render_level(level: str, nodes: list[dict], expanded: bool = False) -> None:
 selected_node_id = st.session_state.get("selected_node")
 selected_node = NODE_BY_ID.get(selected_node_id) if selected_node_id else None
 
-st.title("Power Map")
-st.markdown(
-    """
-    <div class="report-intro">
-    <p>
-    Tangled titles are not caused by one missing form. They emerge when family
-    inheritance, legal records, repair programs, tax systems, and housing markets
-    fail to recognize the same person as the homeowner.
-    </p>
-    </div>
-    """
-    ,
-    unsafe_allow_html=True,
-)
+intro_text_col, intro_image_col = st.columns([0.62, 0.38], vertical_alignment="center")
+with intro_text_col:
+    st.title("Power Map")
+    st.markdown(
+        """
+        <div class="report-intro">
+        <p>
+        Tangled titles are not caused by one missing form. They emerge when family
+        inheritance, legal records, repair programs, tax systems, and housing markets
+        fail to recognize the same person as the homeowner.
+        </p>
+        </div>
+        """
+        ,
+        unsafe_allow_html=True,
+    )
+with intro_image_col:
+    render_local_image(
+        "power_map_system_touchpoints.png",
+        "image-card medium",
+        "System touchpoints around tangled title risk.",
+    )
 
 if selected_node:
     st.markdown(
@@ -567,7 +575,10 @@ touchpoint_text_col, touchpoint_image_col = st.columns([0.68, 0.32], vertical_al
 with touchpoint_text_col:
     st.markdown(
         """
-        <p class="section-subtitle">Touchpoints show when the ecosystem becomes visible to residents.</p>
+        <div class="interpretive-lead-card">
+            <p class="section-lead">Touchpoints are the moments when the broader ecosystem becomes visible to residents in everyday life.</p>
+            <p class="section-supporting-text">They often appear when a death in the family, urgent repair need, tax notice, probate issue, or paperwork mismatch forces someone to seek help. The map shows where fragmented systems become relevant and where support or intervention can enter.</p>
+        </div>
         """
         ,
         unsafe_allow_html=True,
