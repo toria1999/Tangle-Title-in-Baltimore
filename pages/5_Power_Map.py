@@ -416,22 +416,15 @@ with intro_text_col:
     st.title("Power Map")
     st.markdown(
         """
-        <div class="report-intro">
-        <p>
-        Tangled titles are not caused by one missing form. They emerge when family
-        inheritance, legal records, repair programs, tax systems, and housing markets
-        fail to recognize the same person as the homeowner.
-        </p>
-        </div>
-        """
-        ,
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        """
         <div class="overview-inline-card" id="overview">
             <h2>Overview</h2>
-            <p><strong>Which systems create or reduce tangled title risk?</strong> The map shows where individual knowledge gaps, family conflict, community services, legal systems, tax pressure, and structural inequality become connected.</p>
+            <p>Tangled titles are not caused by one missing form. They emerge when family inheritance, legal records, repair programs, tax systems, and housing markets fail to recognize the same person as the homeowner.</p>
+            <p class="overview-transition">This map shows how risk is produced across connected systems:</p>
+            <ul>
+                <li>Individual and family knowledge gaps can delay title clearing.</li>
+                <li>Community, legal, and repair programs often reveal the problem only after residents seek help.</li>
+                <li>Tax pressure, housing markets, and structural inequality can turn paperwork problems into housing loss.</li>
+            </ul>
         </div>
         """,
         unsafe_allow_html=True,

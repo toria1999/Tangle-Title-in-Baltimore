@@ -310,24 +310,15 @@ with intro_text_col:
     st.title("Interview")
     st.markdown(
         """
-        <div class="report-intro">
-        <p>
-        Tangled titles in Baltimore sit at the intersection of law, family, housing,
-        and structural inequality. Interviews with legal, housing, civic design, and
-        policy stakeholders show that title problems often remain invisible until
-        residents seek repairs, receive tax sale notices, or try to access public
-        benefits.
-        </p>
-        </div>
-        """
-        ,
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        """
         <div class="overview-inline-card" id="overview">
             <h2>Overview</h2>
-            <p><strong>What did stakeholders repeatedly say?</strong> Tangled titles are not only a paperwork problem. They emerge when family relationships, service pathways, legal institutions, economic constraints, and racialized housing inequality collide.</p>
+            <p>Tangled titles in Baltimore sit at the intersection of law, family, housing, and structural inequality. Interviews with legal, housing, civic design, and policy stakeholders show that title problems often remain invisible until residents seek repairs, receive tax sale notices, or try to access public benefits.</p>
+            <p class="overview-transition">Across interviews, stakeholders repeatedly emphasized:</p>
+            <ul>
+                <li>Tangled titles are not only a paperwork problem.</li>
+                <li>Ownership mismatch can turn family history into administrative burden.</li>
+                <li>Trusted outreach, warm handoffs, and service coordination are needed before residents reach crisis.</li>
+            </ul>
         </div>
         """,
         unsafe_allow_html=True,

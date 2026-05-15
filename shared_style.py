@@ -965,8 +965,8 @@ def apply_theme() -> None:
         }
 
         .image-card.medium img {
-            height: 320px;
-            max-height: 340px;
+            height: 260px;
+            max-height: 260px;
         }
 
         .image-card.stakeholder img {
@@ -977,7 +977,7 @@ def apply_theme() -> None:
             border-left: 5px solid var(--bwdc-gold);
             border-radius: 10px;
             background: rgba(255, 247, 220, 0.74);
-            padding: 0.88rem 1rem;
+            padding: 1rem 1.1rem;
             margin-top: 0.85rem;
             box-shadow: 0 8px 18px rgba(24, 49, 45, 0.06);
         }
@@ -989,9 +989,26 @@ def apply_theme() -> None:
         }
 
         .overview-inline-card p {
-            margin: 0;
+            margin: 0 0 0.52rem;
             line-height: 1.5;
             color: var(--bwdc-teal-deep);
+        }
+
+        .overview-inline-card .overview-transition {
+            font-weight: 750;
+            color: var(--bwdc-teal-deep);
+            margin-top: 0.6rem;
+        }
+
+        .overview-inline-card ul {
+            margin: 0.25rem 0 0;
+            padding-left: 1.15rem;
+            color: var(--bwdc-teal-deep);
+            line-height: 1.42;
+        }
+
+        .overview-inline-card li {
+            margin: 0.22rem 0;
         }
 
         .image-caption {
