@@ -196,7 +196,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-with st.expander("Detailed pathway behind the visual", expanded=False):
+with st.expander("Details behind", expanded=False):
     for idx, step in enumerate(PROBLEM_PATHWAY_DETAIL, start=1):
         st.markdown(f"**{idx}. {step}**")
 
@@ -218,7 +218,6 @@ with col1:
     st.markdown(
         """
         <div class="compact-grid">
-            <div class="compact-card"><h3>Resident journey</h3><p>A fictional composite pathway showing how title problems become visible.</p></div>
             <div class="compact-card"><h3>Quant map</h3><p>Tract-level patterns in title risk and wealth context.</p></div>
             <div class="compact-card"><h3>Interviews</h3><p>Stakeholder themes about crisis, navigation, and institutional trust.</p></div>
             <div class="compact-card"><h3>Power map</h3><p>Actors, barriers, facilitators, and intervention points.</p></div>

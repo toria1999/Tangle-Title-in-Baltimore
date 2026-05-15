@@ -384,7 +384,7 @@ def render_level(level: str, nodes: list[dict], expanded: bool = False) -> None:
         f"""
         <div class="hierarchy-level" style="--level-color:{color};">
             <h3>{level}</h3>
-            <p class="muted-note">{len(nodes)} nodes shown. Items are laid out as cards to avoid overlap.</p>
+            <p class="muted-note">{len(nodes)} nodes shown. </p>
         </div>
         """,
         unsafe_allow_html=True,
