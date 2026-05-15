@@ -12,7 +12,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 PLACEHOLDER_DIR = ROOT_DIR / "assets" / "placeholders"
 
-from shared_style import apply_theme, render_page_toc, section_h2
+from shared_style import apply_theme, render_page_toc, section_h2, support_badge
 from tangled_titles_content import (
     INTERVENTION_LEVERAGE_POINTS,
     LEVELS,
@@ -33,6 +33,8 @@ except ImportError:
 
 st.set_page_config(page_title="Power Map", layout="wide")
 apply_theme()
+
+support_badge()
 
 POWER_MAP_TOC = (
     ("overview", "Overview"),
@@ -660,9 +662,3 @@ with st.expander("Local implementation resources", expanded=False):
                 """,
                 unsafe_allow_html=True,
             )
-
-render_local_image(
-    "interview_stakeholder_evidence.png",
-    "image-card stakeholder page-ending-image",
-    "Community-facing stakeholder engagement and outreach.",
-)

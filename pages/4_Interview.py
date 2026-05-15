@@ -12,7 +12,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 PLACEHOLDER_DIR = ROOT_DIR / "assets" / "placeholders"
 
-from shared_style import apply_theme, render_page_toc, section_h2
+from shared_style import apply_theme, render_page_toc, section_h2, support_badge
 from tangled_titles_content import (
     INTERVIEW_THEMES,
     NODE_BY_ID,
@@ -24,6 +24,8 @@ from tangled_titles_content import (
 
 st.set_page_config(page_title="Interview", layout="wide")
 apply_theme()
+
+support_badge()
 
 INTERVIEW_TOC = (
     ("overview", "Overview"),

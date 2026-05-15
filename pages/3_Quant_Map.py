@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from shared_style import apply_theme
+from shared_style import apply_theme, support_badge
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -121,6 +121,8 @@ _QUANT_TOC_H2: tuple[tuple[str, str], ...] = (
 
 st.set_page_config(page_title="Quantitative Evidence", layout="wide")
 apply_theme()
+
+support_badge()
 
 # =============================================================================
 # Helpers: I/O, formatting, and chart/map renderers (layout starts near page bottom)

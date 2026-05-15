@@ -10,7 +10,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from shared_style import apply_theme, render_page_toc, section_h2
+from shared_style import apply_theme, render_page_toc, section_h2, support_badge
 from tangled_titles_content import (
     RESIDENT_JOURNEY_STAGES,
     TASHA_BALTIMORE_SCALE_CONTEXT,
@@ -23,6 +23,8 @@ from tangled_titles_content import (
 
 st.set_page_config(page_title="Resident Journey", layout="wide")
 apply_theme()
+
+support_badge()
 
 JOURNEY_TOC = (
     ("overview", "Overview"),
