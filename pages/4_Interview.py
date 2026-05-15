@@ -9,6 +9,7 @@ import streamlit.components.v1 as components
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+PLACEHOLDER_DIR = ROOT_DIR / "assets" / "placeholders"
 
 from shared_style import apply_theme, render_page_toc, section_h2
 from tangled_titles_content import (
@@ -339,17 +340,7 @@ st.markdown(
     ,
     unsafe_allow_html=True,
 )
-st.markdown(
-    """
-    <div class="image-placeholder-card">
-        <span class="tag-pill">Image placeholder</span>
-        <h3>Stakeholder evidence, not transcript dumping</h3>
-        <p>Suggested image: a respectful editorial-style scene of interview notes, highlighted quotes, a rowhouse outline, and civic/legal service touchpoints.</p>
-        <span class="image-placeholder-path">assets/placeholders/interview_stakeholder_evidence.png</span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.image(PLACEHOLDER_DIR / "interview_stakeholder_evidence.png", use_container_width=True)
 
 section_h2("interviewee-perspectives", "Interviewee Perspectives")
 st.markdown(
@@ -515,17 +506,9 @@ st.markdown(
     ,
     unsafe_allow_html=True,
 )
-st.markdown(
-    """
-    <div class="image-placeholder-card">
-        <span class="tag-pill">Image placeholder</span>
-        <h3>Recurring themes from interviews</h3>
-        <p>Suggested image: a calm visual cluster of recurring qualitative themes: repairs, deed transfer, estate planning, family conflict, tax sale, and community outreach.</p>
-        <span class="image-placeholder-path">assets/placeholders/interview_recurring_themes.png</span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+_, recurring_image_col, _ = st.columns([0.22, 0.56, 0.22])
+with recurring_image_col:
+    st.image(PLACEHOLDER_DIR / "interview_recurring_themes.png", use_container_width=True)
 
 with st.expander("Explore recurring words from interviews", expanded=False):
     st.markdown(

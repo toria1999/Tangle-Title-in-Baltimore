@@ -9,6 +9,7 @@ import streamlit.components.v1 as components
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+PLACEHOLDER_DIR = ROOT_DIR / "assets" / "placeholders"
 
 from shared_style import apply_theme, render_page_toc, section_h2
 from tangled_titles_content import (
@@ -397,19 +398,23 @@ selected_node_id = st.session_state.get("selected_node")
 selected_node = NODE_BY_ID.get(selected_node_id) if selected_node_id else None
 
 st.title("Power Map")
-st.markdown(
-    """
-    <div class="report-intro">
-    <p>
-    Tangled titles are not caused by one missing form. They emerge when family
-    inheritance, legal records, repair programs, tax systems, and housing markets
-    fail to recognize the same person as the homeowner.
-    </p>
-    </div>
-    """
-    ,
-    unsafe_allow_html=True,
-)
+intro_text_col, intro_image_col = st.columns([0.56, 0.44], vertical_alignment="center")
+with intro_text_col:
+    st.markdown(
+        """
+        <div class="report-intro">
+        <p>
+        Tangled titles are not caused by one missing form. They emerge when family
+        inheritance, legal records, repair programs, tax systems, and housing markets
+        fail to recognize the same person as the homeowner.
+        </p>
+        </div>
+        """
+        ,
+        unsafe_allow_html=True,
+    )
+with intro_image_col:
+    st.image(PLACEHOLDER_DIR / "power_map_multilevel_ecosystem.png", use_container_width=True)
 
 if selected_node:
     st.markdown(
@@ -427,28 +432,19 @@ if selected_node:
         st.rerun()
 
 section_h2("overview", "Overview")
-st.markdown(
-    """
-    <div class="key-takeaway-card">
-        <strong>Which systems create or reduce tangled title risk?</strong>
-        The map shows where individual knowledge gaps, family conflict,
-        community services, legal systems, tax pressure, and structural inequality
-        become connected.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown(
-    """
-    <div class="image-placeholder-card">
-        <span class="tag-pill">Image placeholder</span>
-        <h3>Multilevel ecosystem around a tangled title</h3>
-        <p>Suggested image: a Baltimore rowhouse at the center, surrounded by family, legal records, repair program paperwork, tax notices, and community support actors.</p>
-        <span class="image-placeholder-path">assets/placeholders/power_map_multilevel_ecosystem.png</span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+overview_col, overview_spacer = st.columns([0.72, 0.28])
+with overview_col:
+    st.markdown(
+        """
+        <div class="key-takeaway-card">
+            <strong>Which systems create or reduce tangled title risk?</strong>
+            The map shows where individual knowledge gaps, family conflict,
+            community services, legal systems, tax pressure, and structural inequality
+            become connected.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 section_h2("hierarchical-power-map", "Hierarchical Power Map")
 central = NODE_BY_ID["tangled_titles"]
 st.markdown(
@@ -564,17 +560,9 @@ st.markdown(
     ,
     unsafe_allow_html=True,
 )
-st.markdown(
-    """
-    <div class="image-placeholder-card">
-        <span class="tag-pill">Image placeholder</span>
-        <h3>Resident encounters across systems</h3>
-        <p>Suggested image: a clean swimlane-style illustration showing the resident moving from home and family records to repair assistance, legal aid, tax offices, and market pressure.</p>
-        <span class="image-placeholder-path">assets/placeholders/power_map_system_touchpoints.png</span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+_, touchpoint_image_col, _ = st.columns([0.22, 0.56, 0.22])
+with touchpoint_image_col:
+    st.image(PLACEHOLDER_DIR / "power_map_system_touchpoints.png", use_container_width=True)
 touchpoint_levels = {
     "Resident / household": "Individual Level Factors",
     "Family / interpersonal actors": "Interpersonal Level Factors",
@@ -646,6 +634,20 @@ with st.expander("Explore intervention leverage points", expanded=False):
                 ),
                 unsafe_allow_html=True,
             )
+
+implementation_image_col, implementation_text_col = st.columns([0.38, 0.62], vertical_alignment="center")
+with implementation_image_col:
+    st.image(PLACEHOLDER_DIR / "implentation resoureces.png", use_container_width=True)
+with implementation_text_col:
+    st.markdown(
+        """
+        <div class="key-takeaway-card">
+            <strong>Implementation requires coordination.</strong>
+            Local legal, housing, financial, community, and tax-sale prevention resources sit across the same ecosystem shown above.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 with st.expander("Local implementation resources", expanded=False):
     st.markdown(
